@@ -1,0 +1,329 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Onward · Case study by Amulya</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Figtree:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#f2f3ef;--card:#ffffff;--ink:#14171a;--muted:#585e59;--line:#d8dbd3;
+  --accent:#2b44c8;--project:#1d5f8f;--project-tint:#e2eef7;--signal:#ffd23f;--on-signal:#15181b;--warn:#7a4e00;--warn-tint:#fdf1d6;
+  --display:'Bricolage Grotesque',ui-sans-serif,system-ui,sans-serif;
+  --body:'Figtree',ui-sans-serif,system-ui,-apple-system,'Segoe UI',sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --paper:#121412;--card:#1a1d19;--ink:#eceee8;--muted:#a3a9a2;--line:#2c302b;
+  --accent:#8fa2ff;--project:#7fb6e0;--project-tint:#16283a;--warn:#f0c46a;--warn-tint:#3a2c10;color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#121412;--card:#1a1d19;--ink:#eceee8;--muted:#a3a9a2;--line:#2c302b;
+  --accent:#8fa2ff;--project:#7fb6e0;--project-tint:#16283a;--warn:#f0c46a;--warn-tint:#3a2c10;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font:17px/1.65 var(--body);-webkit-font-smoothing:antialiased;padding-inline:20px;padding-block:0 80px}
+a{color:var(--accent)}
+a:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+img{max-width:100%;height:auto;display:block}
+h1,h2,h3{font-family:var(--display);font-weight:700;letter-spacing:-.02em;text-wrap:balance;margin:0}
+p{margin:0}
+.wrap{max-width:1120px;margin:0 auto}
+.col{max-width:680px;margin:0 auto;display:flex;flex-direction:column;gap:18px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:16px;padding-block:calc(20px + env(safe-area-inset-top,0px)) 20px;font-weight:600}
+.top a{text-decoration:none;color:var(--ink)}
+.label{font:500 12px/1.4 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.hero{padding-block:48px 32px;display:flex;flex-direction:column;gap:20px;max-width:880px;margin:0 auto}
+.hero h1{font-size:clamp(40px,7vw,76px);line-height:.98}
+.hero .lede{font-size:clamp(19px,2.4vw,22px);line-height:1.5;color:var(--muted);max-width:640px}
+.cta{display:flex;flex-wrap:wrap;gap:12px}
+.btn{display:inline-flex;align-items:center;gap:10px;min-height:48px;padding:0 22px;border-radius:999px;font-weight:600;text-decoration:none;border:1.5px solid var(--ink);color:var(--ink)}
+.btn.solid{background:var(--signal);border-color:var(--signal);color:var(--on-signal)}
+.btn.solid:hover{border-color:var(--ink)}
+.facts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:14px;overflow:hidden;max-width:1120px;margin:0 auto 40px}
+.facts div{background:var(--card);padding:16px 18px;display:flex;flex-direction:column;gap:4px;min-width:0}
+.facts strong{font-weight:600;font-size:15px;line-height:1.45}
+figure{margin:0;display:flex;flex-direction:column;gap:10px;min-width:0}
+figure.wide{max-width:1120px;margin:16px auto}
+figure img{border-radius:12px;border:1px solid var(--line)}
+figcaption{font-size:14px;color:var(--muted);max-width:680px}
+section{padding-block:36px;border-top:1px solid var(--line)}
+section h2{font-size:clamp(28px,4vw,38px);line-height:1.1}
+section h3{font-size:22px;line-height:1.2;margin-top:12px}
+.q{font-family:var(--display);font-size:clamp(22px,3vw,28px);line-height:1.3;font-weight:500;margin:8px 0;padding:20px 24px;background:var(--project-tint);border-radius:14px}
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:4px;min-width:0}
+.stat b{font-family:var(--display);font-size:36px;line-height:1;color:var(--project)}
+.stat span{font-size:15px;line-height:1.45}
+.src{font-size:14px;color:var(--muted)}
+ol.ins{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:14px;counter-reset:i}
+ol.ins li{display:grid;grid-template-columns:36px minmax(0,1fr);gap:12px;counter-increment:i}
+ol.ins li::before{content:counter(i,decimal-leading-zero);font:500 13px/1.9 var(--mono);color:var(--project)}
+ul{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:8px}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;max-width:1120px;margin:16px auto 0}
+.persona{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:10px;min-width:0;font-size:15px;line-height:1.55}
+.persona h3{margin:0;font-size:20px}
+.persona .trip{font:500 12px/1.5 var(--mono);color:var(--project)}
+.persona .need{margin-top:auto;padding-top:12px;border-top:1px solid var(--line)}
+.scroll{overflow-x:auto;max-width:1120px;margin:16px auto 0;border:1px solid var(--line);border-radius:14px;background:var(--card)}
+table{border-collapse:collapse;width:100%;min-width:760px;font-size:15px;line-height:1.5}
+th{text-align:left;font:500 12px/1.4 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding:12px 16px;border-bottom:1px solid var(--line)}
+td{padding:12px 16px;border-bottom:1px solid var(--line);vertical-align:top}
+tr:last-child td{border-bottom:none}
+.mood{display:inline-flex;align-items:center;gap:8px;font:500 13px var(--mono);white-space:nowrap}
+.mood i{width:10px;height:10px;border-radius:999px;display:inline-block}
+.m-mid i{background:var(--muted)} .m-low i{background:#c0392b}
+.opp{color:var(--project);font-weight:600}
+.flows{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;max-width:1120px;margin:16px auto 0}
+.flow{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.flow ol{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px}
+.flow li{border:1px solid var(--line);border-radius:10px;padding:10px 14px;font-size:15px;line-height:1.5}
+.flow li.dec{border-style:dashed}
+.flow li.dec small{display:block;color:var(--warn);font-size:13px}
+.flow li.end{border-color:var(--project);background:var(--project-tint);font-weight:600}
+.scope{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.box{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:10px;font-size:15px;line-height:1.55;min-width:0}
+.changes{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.changes div{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;font-size:15px;line-height:1.55;min-width:0}
+.changes strong{display:block;margin-bottom:4px}
+.screens{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px 16px;max-width:1120px;margin:16px auto 0}
+.screens .full{grid-column:1 / -1}
+.swatches{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px}
+.sw{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--card);min-width:0}
+.sw i{display:block;height:56px}
+.sw span{display:block;padding:8px 10px;font:500 12px/1.4 var(--mono);color:var(--muted)}
+.sw b{display:block;font:600 13px/1.4 var(--body);color:var(--ink)}
+.type{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.type div{background:#1d2125;color:#fff;border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:4px;min-width:0}
+.type small{font:500 12px/1.4 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:#b8bec4}
+.type .a{font-family:'Atkinson Hyperlegible',var(--body);font-size:26px;font-weight:700;line-height:1.2}
+.type .m{font-family:'Atkinson Hyperlegible Mono',var(--mono);font-size:26px;font-weight:700;line-height:1.2}
+.results{display:grid;grid-template-columns:minmax(112px,2fr) minmax(0,3fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.results div{background:var(--card);padding:12px 16px;min-width:0;font-size:15px;line-height:1.5}
+.results div:nth-child(odd){color:var(--muted)}
+.final{max-width:880px;margin:40px auto 0;padding:32px;border-radius:20px;background:#1d2125;color:#fff;display:flex;flex-wrap:wrap;gap:20px;align-items:center;justify-content:space-between}
+.final h2{font-size:clamp(24px,3.5vw,32px)}
+.final .btn{border-color:var(--signal)}
+.next{max-width:1120px;margin:48px auto 0;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;font-weight:600}
+@media (max-width:900px){.facts{grid-template-columns:repeat(2,minmax(0,1fr))}.grid3,.flows,.screens,.scope,.changes{grid-template-columns:minmax(0,1fr)}.swatches{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (max-width:560px){.stats,.type{grid-template-columns:minmax(0,1fr)}}
+</style>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@700&family=Atkinson+Hyperlegible+Mono:wght@700&display=swap" rel="stylesheet">
+</head>
+<body>
+<div class="wrap">
+  <header class="top"><a href="index.html">Amulya</a><a href="index.html#work">All work</a></header>
+</div>
+
+<header class="hero">
+  <span class="label">Case 02 · Mobile app · 2026</span>
+  <h1>Onward: designing for the worst ten minutes of a trip</h1>
+  <p class="lede">A mobile app that tells a stranded traveler what to do right now, what to ask the airline for, and what they're owed, built around the moment a flight is cancelled at the gate.</p>
+  <div class="cta">
+    <a class="btn solid" href="onward-app.html">Try the live prototype →</a>
+    <a class="btn" href="#solution">Jump to the solution</a>
+  </div>
+</header>
+
+<div class="facts" role="list">
+  <div role="listitem"><span class="label">My role</span><strong>Product designer, end to end</strong></div>
+  <div role="listitem"><span class="label">Type</span><strong>Self-initiated concept, consumer mobile app</strong></div>
+  <div role="listitem"><span class="label">Platform</span><strong>iOS and Android</strong></div>
+  <div role="listitem"><span class="label">Deliverables</span><strong>Research, personas, flows, wireframes, design system, prototype</strong></div>
+</div>
+
+<figure class="wide">
+  <img src="OnwardHero.png" alt="Six Onward screens: lock-screen alert, disruption plan, options, ask the desk, what you're owed and the claim pack" width="2400" height="869">
+  <figcaption>From the cancellation alert to a claim the traveler sends herself. Every screen ends in one yellow next step.</figcaption>
+</figure>
+
+<section><div class="col">
+  <span class="label">The problem</span>
+  <h2>The hard part isn't the wait. It's not knowing what to do.</h2>
+  <p>Maya's 18:40 flight from Paris to Rome is cancelled at the gate. 180 people head for one desk. The airline app hasn't updated yet, she doesn't know her options, and she has no idea whether she's owed anything.</p>
+  <div class="stats">
+    <div class="stat"><b>1 in 9</b><span>US flights arrived 45+ minutes late in 2025, the worst since 2014</span></div>
+    <div class="stat"><b>15%</b><span>of disrupted travelers sorted it out within 30 minutes</span></div>
+    <div class="stat"><b>42%</b><span>paid costs that were never reimbursed</span></div>
+  </div>
+  <p class="src">Sources: <a href="https://pirg.org/massachusetts/edfund/media-center/new-report-on-time-flight-arrivals-in-2025-hit-worst-level-since-2014/" target="_blank" rel="noopener">U.S. PIRG</a>, and a survey of 1,000+ US travelers by Hopper Technology Solutions reported by <a href="https://fortune.com/2026/05/19/89-travelers-disruptions-top-concern-paying-more-summer-travel/" target="_blank" rel="noopener">Fortune</a>.</p>
+  <p>The rules make it harder. Europe and the UK pay cash for long delays and cancellations, the US guarantees refunds but not compensation, and India pays only for late-notice cancellations. Most people don't know which applies to them.</p>
+  <p class="q">How might we get a stranded traveler from "my flight is cancelled" to rebooked, looked after and ready to claim, in the ten minutes before the queue decides for them?</p>
+</div></section>
+
+<section><div class="col">
+  <span class="label">Research</span>
+  <h2>What I looked at</h2>
+  <ul>
+    <li><strong>Desk research:</strong> delay data for the US and Europe, a large traveler survey, and passenger rules for the EU, UK, US and India, including the EU reform approved in July 2026.</li>
+    <li><strong>Competitor review:</strong> airline apps, Flighty, TripIt Pro and claim companies like AirHelp, mapped to the moment of a disruption each one covers.</li>
+    <li><strong>Traveler profiles:</strong> public reviews, complaints and social media threads organised into three composite profiles: Manchester to Barcelona, Bengaluru to Kozhikode, and New York to Milan.</li>
+  </ul>
+  <p style="color:var(--muted);font-size:15px">Composite profiles show patterns across many travelers, but they are not interviews. I treated every insight as a hypothesis to check in usability testing.</p>
+  <p><strong>The gap:</strong> alerts tell you something went wrong, airline apps only help with their own flights, and claim companies arrive weeks later and keep 35% of the payout. Nobody answers "what do I do right now, and what am I owed?" at the gate.</p>
+</div></section>
+
+<section><div class="col">
+  <span class="label">Insights</span>
+  <h2>Travelers didn't need more alerts. They needed a next step.</h2>
+  <ol class="ins">
+    <li><span><strong>Everyone self-serves first.</strong> All three opened an app or a search within minutes. The desk queue was a backup, not the plan.</span></li>
+    <li><span><strong>The answer differs by journey.</strong> One traveler was probably owed £220 and never claimed; another wasn't covered by EU rules at all. "You're owed" and "you're not" need equal clarity.</span></li>
+    <li><span><strong>The biggest fear is spending your own money.</strong> One traveler paid $780 for a new ticket without knowing whether the airline would cover it.</span></li>
+    <li><span><strong>Small costs get abandoned.</strong> £25–30 and ₹3,000 were written off, because there was no receipt trail.</span></li>
+    <li><span><strong>The flight is only part of it.</strong> Hotels, travel companions and plans at the destination all need rearranging.</span></li>
+  </ol>
+  <p>The project started as a flight booking app. The research moved it to the moment booking apps leave you alone.</p>
+</div></section>
+
+<section>
+  <div class="col"><span class="label">Personas</span><h2>Who I designed for</h2></div>
+  <div class="grid3">
+    <article class="persona"><span class="label">Primary</span><h3>Maya, stranded at the gate</h3><span class="trip">Paris → Rome · cancelled at the gate</span><p>The gate screen changes before the airline app. She knows European rights exist, not what applies to her.</p><p class="need"><strong>Needs:</strong> her options, what to ask the desk for, and whether she's owed compensation.</p></article>
+    <article class="persona"><span class="label">Primary</span><h3>Rohan, juggling plans</h3><span class="trip">Bengaluru → Kozhikode · cancelled by SMS</span><p>Travelling with family and finds out before leaving home. Knows about refunds, nothing about meals, hotels or compensation.</p><p class="need"><strong>Needs:</strong> a complete plan for the flight, the hotel and the people with him.</p></article>
+    <article class="persona"><span class="label">Secondary</span><h3>Dana, booking her own way</h3><span class="trip">New York → Milan · pushed back a day</span><p>Wakes to a notification and starts searching other airlines. Knows she gets a refund, not whether a new ticket is covered.</p><p class="need"><strong>Needs:</strong> the best way there, and who pays, before she presses Buy.</p></article>
+  </div>
+</section>
+
+<section>
+  <div class="col"><span class="label">Journey map</span><h2>Maya's evening dips in the first ten minutes, and again at the claim</h2></div>
+  <div class="scroll"><table>
+    <thead><tr><th scope="col">Stage</th><th scope="col">Mood</th><th scope="col">Pain today</th><th scope="col">What Onward does</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Waiting at the gate</strong></td><td><span class="mood m-mid"><i></i>Mid</span></td><td>Boarding time passes and no one says why</td><td class="opp">Live status and the inbound plane's delay</td></tr>
+      <tr><td><strong>Flight cancelled</strong></td><td><span class="mood m-low"><i></i>Low</span></td><td>The gate screen changes before the airline app does</td><td class="opp">Lock-screen alert with one next step</td></tr>
+      <tr><td><strong>First 10 minutes</strong></td><td><span class="mood m-low"><i></i>Low</span></td><td>180 people rush one desk, with no idea what to do</td><td class="opp">Do-this-now plan: rebook, queue, call</td></tr>
+      <tr><td><strong>Finding a flight</strong></td><td><span class="mood m-low"><i></i>Low</span></td><td>Options spread across apps, sites and the agent</td><td class="opp">Options side by side, then the airline's rebooking</td></tr>
+      <tr><td><strong>Food and hotel</strong></td><td><span class="mood m-mid"><i></i>Mid</span></td><td>Unsure what to ask for or what's included</td><td class="opp">"Ask the desk for" checklist and a card for the agent</td></tr>
+      <tr><td><strong>Paying her own way</strong></td><td><span class="mood m-low"><i></i>Low</span></td><td>Taxi and dinner receipts lost by morning</td><td class="opp">Receipt log with photos</td></tr>
+      <tr><td><strong>Claiming later</strong></td><td><span class="mood m-low"><i></i>Low</span></td><td>Not sure she qualifies, so she gives up</td><td class="opp">"You may be owed €250" and a ready claim pack</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section><div class="col">
+  <span class="label">Principles and scope</span>
+  <h2>Four rules that decided what got built</h2>
+  <ol class="ins">
+    <li><span><strong>One next step, always.</strong> Every screen ends in a single yellow bar that says what to do now.</span></li>
+    <li><span><strong>Prepare, don't pretend.</strong> A third-party app can't rebook seats or file claims, so Onward prepares everything and hands off to the airline.</span></li>
+    <li><span><strong>Plain words, honest answers.</strong> "You may be owed €250", with the reason and the official rule. "Nothing is owed" is said just as clearly.</span></li>
+    <li><span><strong>Built for a shaking hand.</strong> Big type, high contrast, 48px targets and one-thumb reach.</span></li>
+  </ol>
+  <div class="scope">
+    <div class="box"><span class="label">In scope</span><ul><li>Lock-screen alert with one next step</li><li>Do-this-now plan</li><li>Options side by side</li><li>"What you may be owed": EU and US designed, UK and India rules researched</li><li>"Ask the desk for" checklist and a card for the agent</li><li>Receipt log</li><li>Free claim pack the traveler sends</li></ul></div>
+    <div class="box"><span class="label">Left out, on purpose</span><ul><li>Booking seats directly (needs airline partnerships)</li><li>Flight search and fares</li><li>Payments</li><li>Filing claims or legal advice for the traveler</li></ul></div>
+  </div>
+</div></section>
+
+<section>
+  <div class="col"><span class="label">User flows</span><h2>Onward prepares; the airline's own channels do the rest</h2></div>
+  <div class="flows">
+    <div class="flow"><span class="label">Flow 1 · cancellation to updated trip</span><ol>
+      <li>Cancellation alert on the lock screen, with one next step</li>
+      <li>The disruption plan opens: rebook, queue, call</li>
+      <li>Options side by side: next flights, refund, another route</li>
+      <li class="dec">Rebook or refund?<small>A refund is requested in the airline app and tracked here</small></li>
+      <li>She rebooks in the airline app through a deep link</li>
+      <li class="dec">Overnight wait?<small>If so, the checklist says to ask for a hotel and meals</small></li>
+      <li>She logs any receipts for what she pays herself</li>
+      <li class="end">Trip updated; the claim pack starts filling</li>
+    </ol></div>
+    <div class="flow"><span class="label">Flow 2 · end of trip to sent claim</span><ol>
+      <li>The trip ends; flight, delay and cause are saved</li>
+      <li>"What you're owed" checks the rule for this exact journey</li>
+      <li class="dec">Likely owed?<small>If not, a clear no with the reason, plus refund and care rights</small></li>
+      <li>The claim pack is prefilled with the flight, delay and receipts</li>
+      <li>She reviews it and sends it through the airline's own form</li>
+      <li class="end">A reminder follows up if the airline hasn't replied</li>
+    </ol></div>
+  </div>
+</section>
+
+<section>
+  <div class="col"><span class="label">Wireframes</span><h2>Seven screens in grey, then five changes</h2><p>I tested the order of information in low fidelity first, from the lock-screen alert to the claim pack.</p></div>
+  <figure class="wide"><img src="OnwardWireframes.png" alt="Seven wireframes: lock screen, plan, options, what you're owed, ask the desk, receipts and claim pack" loading="lazy" width="2400" height="748"></figure>
+  <div class="col">
+    <div class="changes">
+      <div><strong>A tab bar became a tracker</strong>Four tabs suggested four separate places. A disruption is a sequence, so a three-step tracker (Rebook, Looked after, Owed) shows where you are.</div>
+      <div><strong>Many buttons became one bar</strong>Each card had its own button. Now one yellow next-step bar sits at the bottom of every screen, within thumb reach.</div>
+      <div><strong>A wrong label was fixed</strong>The wireframe called the next-morning flight "Fastest", but the Milan route lands earlier. It's now "Earliest", and every option shows how much later it lands.</div>
+      <div><strong>The agent card got its own screen</strong>A plain sentence for the desk agent, in large type on a dark background, so Maya can simply turn her phone around.</div>
+    </div>
+    <p>The fifth change: <strong>a clear no got its own screen</strong>, so Dana's New York flight gets an answer too.</p>
+  </div>
+</section>
+
+<section id="solution">
+  <div class="col"><span class="label">The solution</span><h2>Five moments, one next step each</h2>
+  <p>The final UI follows Maya from the alert to the claim. The flight card borrows the look of a departures board, so the most important facts read at a glance.</p></div>
+  <div class="screens">
+    <figure class="full"><img src="OnwardPlan.png" alt="Lock-screen alert, disruption plan and options side by side" loading="lazy" width="2400" height="1696"><figcaption><strong>The first ten minutes.</strong> The alert names one action. The plan puts rebooking in the app first and the desk queue second. Options compare arrival time, how much later than planned, and what you give up.</figcaption></figure>
+    <figure><img src="OnwardCare.png" alt="Ask the desk for checklist and the full-screen card for the agent" loading="lazy" width="1816" height="1880"><figcaption><strong>Looked after.</strong> What the airline must provide tonight, marked Got it or Ask, and a card for the agent that cites the EU rule.</figcaption></figure>
+    <figure><img src="OnwardOwed.png" alt="What you may be owed for Maya's EU flight, and the clear no for Dana's US flight" loading="lazy" width="1816" height="1880"><figcaption><strong>Owed, or not.</strong> "You may be owed €250", with "Not guaranteed" right under the amount and three reasons. Dana gets an equally clear no, and a warning before she buys another ticket.</figcaption></figure>
+    <figure><img src="OnwardClaim.png" alt="Receipt log and the boarding-pass style claim pack with steps to send it" loading="lazy" width="1816" height="1880"><figcaption><strong>Receipts and claim.</strong> Every taxi and sandwich adds up in a claim pack shaped like a boarding pass: €250.00 plus €38.50, saved in the app, with three steps to send it through the airline's own form. No fee.</figcaption></figure>
+    <figure><img src="OnwardDark.png" alt="Disruption plan and what you're owed in dark mode" loading="lazy" width="1816" height="1880"><figcaption><strong>Dark mode.</strong> For a dim terminal late at night, without lighting up the people around you.</figcaption></figure>
+  </div>
+  <div class="col" style="margin-top:36px">
+    <h3>Design system</h3>
+    <p>A small system, also called Onward, so every screen reads like airport signage: calm, high-contrast and instantly scannable. Each colour has one job.</p>
+    <div class="swatches" role="list">
+      <div class="sw" role="listitem"><i style="background:#1d2125"></i><span><b>Sign</b>Flight card</span></div>
+      <div class="sw" role="listitem"><i style="background:#ffd23f"></i><span><b>Signal</b>Next step only</span></div>
+      <div class="sw" role="listitem"><i style="background:#f4f5f2"></i><span><b>Ground</b>Background</span></div>
+      <div class="sw" role="listitem"><i style="background:#b42318"></i><span><b>Red</b>Cancelled</span></div>
+      <div class="sw" role="listitem"><i style="background:#8a5300"></i><span><b>Amber</b>Exceptions</span></div>
+      <div class="sw" role="listitem"><i style="background:#1f6b3a"></i><span><b>Green</b>Got it, rebooked</span></div>
+    </div>
+    <div class="type">
+      <div><small>Text · Atkinson Hyperlegible</small><span class="a">Rebook in the airline app</span></div>
+      <div><small>Codes, times, money · Mono</small><span class="m">CDG → FCO 07:10 €250</span></div>
+    </div>
+    <p>Atkinson Hyperlegible was designed by the Braille Institute for low-vision readers. Its monospaced sibling lines numbers up and keeps 0 from looking like O. Status always carries a word, and every target is at least 48px.</p>
+  </div>
+</section>
+
+<section><div class="col">
+  <span class="label">Validation</span>
+  <h2>Two stranded travelers, five tasks, no help needed</h2>
+  <p>I tested the prototype with two travelers who have had a flight cancelled: a UK traveler on a phone and an Italian traveler on a laptop. They tried five tasks: decide what to do first, pick the flight that lands soonest, show the desk agent what you need, find out what you're owed and why, and add a taxi to the claim.</p>
+  <div class="results">
+    <div>Task success</div><div><strong>2 of 2</strong> finished all five tasks without help</div>
+    <div>First action</div><div><strong>4–5 sec</strong> for the UK traveler to tap the alert</div>
+    <div>Flight choice</div><div><strong>1 of 2</strong> picked the earliest; the other chose the direct flight to avoid a connection</div>
+    <div>What you're owed</div><div><strong>2 of 2</strong> said €250 and explained why</div>
+    <div>Receipts and claim pack</div><div><strong>2 of 2</strong> found both without help</div>
+    <div>Average ease rating</div><div><strong>4.5 / 5</strong></div>
+    <div>Would use it next time</div><div><strong>2 of 2</strong></div>
+  </div>
+  <p class="q">"I like that it actually tells me what I can claim instead of making me search for it."</p>
+  <h3>What I changed after testing</h3>
+  <ul>
+    <li><strong>"Likely owed" became "may be owed".</strong> One traveler paused on €250, unsure whether it was guaranteed or an estimate. "Not guaranteed" and the reason now sit directly under the amount.</li>
+    <li><strong>The claim pack says what happens next.</strong> One traveler wasn't sure whether to download it now or finish later. It now says "Saved in Onward. Nothing to download." and shows three numbered steps to send it.</li>
+  </ul>
+  <figure><img src="OnwardTested.png" alt="Before and after testing: what you're owed, then the claim pack" loading="lazy" width="2400" height="1288"><figcaption>Left to right: what you're owed before and after, then the claim pack before and after.</figcaption></figure>
+  <p style="color:var(--muted);font-size:15px">Two participants is a small sample, so I read these as signals rather than proof. One traveler chose the direct flight over the earlier one, which supports showing options side by side instead of ranking one as best. Dana's "nothing owed" screen wasn't tested in this round; it's first in line for the next one.</p>
+</div></section>
+
+<section><div class="col">
+  <span class="label">Reflection</span>
+  <h2>The most valuable decision was one next step per screen</h2>
+  <ul>
+    <li><strong>Stress changes what good design means.</strong> On a calm day, choice is a feature. At a cancelled gate, it's a burden.</li>
+    <li><strong>Honesty is a feature.</strong> Testing showed that even "likely owed" read like a promise. "May be owed", with "Not guaranteed" right under it, is less exciting and more trustworthy.</li>
+    <li><strong>Knowing the limits kept the scope real.</strong> Hand-offs to the airline's own channels make Onward buildable without partnerships.</li>
+  </ul>
+  <p><strong>Next:</strong> test Dana's "nothing owed" screen with more travelers, then design a day-before heads-up for when the inbound plane is already late, and a way to add a trip from a booking email.</p>
+</div></section>
+
+<div class="final">
+  <h2>Get Maya to Rome yourself</h2>
+  <a class="btn solid" href="onward-app.html">Open the live prototype →</a>
+</div>
+
+<nav class="next" aria-label="More work"><a href="kept.html">← Kept</a><a href="standing.html">Next: Standing →</a></nav>
+<script>(function(){var h=location.hash&&document.getElementById(location.hash.slice(1));try{(h||document.body).scrollIntoView({block:"start"});}catch(e){}})();</script>
+</body>
+</html>

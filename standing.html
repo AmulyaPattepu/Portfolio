@@ -1,0 +1,359 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Standing · Case study by Amulya</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Figtree:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#f2f3ef;--card:#ffffff;--ink:#14171a;--muted:#585e59;--line:#d8dbd3;
+  --accent:#2b44c8;--project:#5b2a6e;--on-project:#ffffff;--project-tint:#f1e8f4;--warn:#7a4e00;--warn-tint:#fdf1d6;
+  --display:'Bricolage Grotesque',ui-sans-serif,system-ui,sans-serif;
+  --body:'Figtree',ui-sans-serif,system-ui,-apple-system,'Segoe UI',sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --paper:#121412;--card:#1a1d19;--ink:#eceee8;--muted:#a3a9a2;--line:#2c302b;
+  --accent:#8fa2ff;--project:#d2a8e4;--on-project:#1a0f20;--project-tint:#2e2036;--warn:#f0c46a;--warn-tint:#3a2c10;color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#121412;--card:#1a1d19;--ink:#eceee8;--muted:#a3a9a2;--line:#2c302b;
+  --accent:#8fa2ff;--project:#d2a8e4;--on-project:#1a0f20;--project-tint:#2e2036;--warn:#f0c46a;--warn-tint:#3a2c10;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font:17px/1.65 var(--body);-webkit-font-smoothing:antialiased;padding-inline:20px;padding-block:0 80px}
+a{color:var(--accent)}
+a:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+img{max-width:100%;height:auto;display:block}
+h1,h2,h3{font-family:var(--display);font-weight:700;letter-spacing:-.02em;text-wrap:balance;margin:0}
+p{margin:0}
+.wrap{max-width:1120px;margin:0 auto}
+.col{max-width:680px;margin:0 auto;display:flex;flex-direction:column;gap:18px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:16px;padding-block:calc(20px + env(safe-area-inset-top,0px)) 20px;font-weight:600}
+.top a{text-decoration:none;color:var(--ink)}
+.label{font:500 12px/1.4 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.hero{padding-block:48px 32px;display:flex;flex-direction:column;gap:20px;max-width:880px;margin:0 auto}
+.hero h1{font-size:clamp(40px,7vw,76px);line-height:.98}
+.hero .lede{font-size:clamp(19px,2.4vw,22px);line-height:1.5;color:var(--muted);max-width:640px}
+.cta{display:flex;flex-wrap:wrap;gap:12px}
+.btn{display:inline-flex;align-items:center;gap:10px;min-height:48px;padding:0 22px;border-radius:999px;font-weight:600;text-decoration:none;border:1.5px solid var(--ink);color:var(--ink)}
+.btn.solid{background:var(--project);border-color:var(--project);color:var(--on-project)}
+.btn.solid:hover{filter:brightness(1.1)}
+.facts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:14px;overflow:hidden;max-width:1120px;margin:0 auto 40px}
+.facts div{background:var(--card);padding:16px 18px;display:flex;flex-direction:column;gap:4px;min-width:0}
+.facts strong{font-weight:600;font-size:15px;line-height:1.45}
+figure{margin:0;display:flex;flex-direction:column;gap:10px;min-width:0}
+figure.wide{max-width:1120px;margin:16px auto}
+figure img{border-radius:12px;border:1px solid var(--line)}
+figcaption{font-size:14px;color:var(--muted);max-width:680px}
+section{padding-block:36px;border-top:1px solid var(--line)}
+section h2{font-size:clamp(28px,4vw,38px);line-height:1.1}
+section h3{font-size:22px;line-height:1.2;margin-top:12px}
+.q{font-family:var(--display);font-size:clamp(22px,3vw,28px);line-height:1.3;font-weight:500;margin:8px 0;padding:20px 24px;background:var(--project-tint);border-radius:14px}
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:4px;min-width:0}
+.stat b{font-family:var(--display);font-size:36px;line-height:1;color:var(--project)}
+.stat span{font-size:15px;line-height:1.45}
+.src{font-size:14px;color:var(--muted)}
+ol.ins{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:14px;counter-reset:i}
+ol.ins li{display:grid;grid-template-columns:36px minmax(0,1fr);gap:12px;counter-increment:i}
+ol.ins li::before{content:counter(i,decimal-leading-zero);font:500 13px/1.9 var(--mono);color:var(--project)}
+ul{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:8px}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;max-width:1120px;margin:16px auto 0}
+.persona{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:10px;min-width:0;font-size:15px;line-height:1.55}
+.persona h3{margin:0;font-size:20px}
+.persona .trip{font:500 12px/1.5 var(--mono);color:var(--project)}
+.persona .need{margin-top:auto;padding-top:12px;border-top:1px solid var(--line)}
+.scroll{overflow-x:auto;max-width:1120px;margin:16px auto 0;border:1px solid var(--line);border-radius:14px;background:var(--card)}
+table{border-collapse:collapse;width:100%;min-width:760px;font-size:15px;line-height:1.5}
+th{text-align:left;font:500 12px/1.4 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding:12px 16px;border-bottom:1px solid var(--line)}
+td{padding:12px 16px;border-bottom:1px solid var(--line);vertical-align:top}
+tr:last-child td{border-bottom:none}
+.mood{display:inline-flex;align-items:center;gap:8px;font:500 13px var(--mono);white-space:nowrap}
+.mood i{width:10px;height:10px;border-radius:999px;display:inline-block}
+.m-mid i{background:var(--muted)} .m-low i{background:var(--warn)} .m-high i{background:var(--project)}
+.opp{color:var(--project);font-weight:600}
+.flows{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;max-width:1120px;margin:16px auto 0}
+.flow{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.flow ol{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px}
+.flow li{border:1px solid var(--line);border-radius:10px;padding:10px 14px;font-size:15px;line-height:1.5}
+.flow li.dec{border-style:dashed}
+.flow li.dec small{display:block;color:var(--warn);font-size:13px}
+.flow li.end{border-color:var(--project);background:var(--project-tint);font-weight:600}
+.scope{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.box{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:10px;font-size:15px;line-height:1.55;min-width:0}
+.changes{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.changes div{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;font-size:15px;line-height:1.55;min-width:0}
+.changes strong{display:block;margin-bottom:4px}
+.screens{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px 16px;max-width:1120px;margin:16px auto 0}
+.screens .full{grid-column:1 / -1}
+.swatches{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px}
+.sw{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--card);min-width:0}
+.sw i{display:block;height:56px}
+.sw span{display:block;padding:8px 10px;font:500 12px/1.4 var(--mono);color:var(--muted)}
+.sw b{display:block;font:600 13px/1.4 var(--body);color:var(--ink)}
+.type{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.type div{background:#f6f5f1;color:#17161a;border:1px solid var(--line);border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:4px;min-width:0}
+.type small{font:500 12px/1.4 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:#5e5a63}
+.type .a{font-family:'Hanken Grotesk',var(--body);font-size:26px;font-weight:700;line-height:1.2}
+.type .m{font-family:'Hanken Grotesk',var(--body);font-size:26px;font-weight:600;line-height:1.2;font-variant-numeric:tabular-nums}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chips span{font:600 13px/16px 'Hanken Grotesk',var(--body);padding:4px 10px;border-radius:6px}
+.note{font-size:15px;color:var(--muted)}
+.results{display:grid;grid-template-columns:minmax(112px,2fr) minmax(0,3fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.results div{background:var(--card);padding:12px 16px;min-width:0;font-size:15px;line-height:1.5}
+.results div:nth-child(odd){color:var(--muted)}
+.final{max-width:880px;margin:40px auto 0;padding:32px;border-radius:20px;background:var(--project-tint);display:flex;flex-wrap:wrap;gap:20px;align-items:center;justify-content:space-between}
+.final h2{font-size:clamp(24px,3.5vw,32px)}
+.next{max-width:1120px;margin:48px auto 0;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;font-weight:600}
+@media (max-width:900px){.facts{grid-template-columns:repeat(2,minmax(0,1fr))}.grid3,.flows,.screens,.scope,.changes{grid-template-columns:minmax(0,1fr)}.swatches{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (max-width:560px){.stats,.type{grid-template-columns:minmax(0,1fr)}}
+</style>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+<div class="wrap">
+  <header class="top"><a href="index.html">Amulya</a><a href="index.html#work">All work</a></header>
+</div>
+
+<header class="hero">
+  <span class="label">Case 03 · Concept redesign · 2026</span>
+  <h1>Standing: designing for the silence after you press Apply</h1>
+  <p class="lede">An unofficial concept redesign of what happens after a candidate presses Apply on LinkedIn. Every application ends in a clear status, and a recruiter can give that answer to everyone still waiting in one step.</p>
+  <div class="cta">
+    <a class="btn solid" href="standing-app.html">Try the live prototype →</a>
+    <a class="btn" href="#solution">Jump to the solution</a>
+  </div>
+</header>
+
+<div class="facts" role="list">
+  <div role="listitem"><span class="label">My role</span><strong>Product designer, end to end</strong></div>
+  <div role="listitem"><span class="label">Type</span><strong>Self-initiated concept redesign of an existing product</strong></div>
+  <div role="listitem"><span class="label">Platform</span><strong>Candidate mobile app, recruiter web tool</strong></div>
+  <div role="listitem"><span class="label">Deliverables</span><strong>Research, personas, flows, wireframes, design system, prototype</strong></div>
+</div>
+
+<figure class="wide">
+  <img src="StandingHero.png" alt="Six Standing screens: applications, an application in review, still being considered, ask for an update, closed applications and a job post with its reply time" width="2400" height="869">
+  <figcaption>From a list that says "Applied" for weeks to one that says where each application really stands.</figcaption>
+</figure>
+
+<section><div class="col">
+  <span class="label">The problem</span>
+  <h2>Candidates can handle a no. What they can't handle is not knowing.</h2>
+  <p>Jordan has sent 48 applications this month. Most of his list still says "Applied", long after the real answer was no. He keeps a spreadsheet just to guess which jobs are still alive.</p>
+  <div class="stats">
+    <div class="stat"><b>11,000</b><span>applications sent on LinkedIn every minute in 2025, up 45% in a year</span></div>
+    <div class="stat"><b>93%</b><span>of US job seekers in one survey had applied and never heard back</span></div>
+    <div class="stat"><b>61%</b><span>of job seekers had been ghosted after an interview</span></div>
+  </div>
+  <p class="src">Sources: The New York Times via <a href="https://www.eweek.com/news/ai-job-applications-linkedin/" target="_blank" rel="noopener">eWeek</a>, a NumberBarn survey via <a href="https://allwork.space/2026/09/66-of-job-seekers-have-been-ghosted-by-employers-during-the-hiring-process" target="_blank" rel="noopener">Allwork.Space</a>, and <a href="https://www.greenhouse.com/blog/greenhouse-2024-state-of-job-hunting-report" target="_blank" rel="noopener">Greenhouse</a>.</p>
+  <p>Recruiters are drowning too: roles now get more than 300 applicants on average (<a href="https://www.hrdive.com/news/recruiters-see-job-applications-triple-to-more-than-300-per-role/820096/" target="_blank" rel="noopener">HR Dive</a>). LinkedIn already has some of the pieces, but they're thin and optional. Hiring systems can send it only three events, and only if the employer opts in. A rejection arrives by email but, per LinkedIn's own <a href="https://learn.microsoft.com/en-us/linkedin/talent/apply-connect/sync-job-application-status-updates?view=li-lts-2026-03" target="_blank" rel="noopener">developer documentation</a>, doesn't appear in the candidate's list of applications.</p>
+  <p class="q">How might every application end in an honest answer, without asking an overloaded recruiter to write 200 emails?</p>
+</div></section>
+
+<section><div class="col">
+  <span class="label">Research</span>
+  <h2>What I looked at</h2>
+  <ul>
+    <li><strong>Desk research:</strong> application volumes, ghosting surveys from Greenhouse, iHire and NumberBarn, and LinkedIn's developer documentation on which statuses employers can send.</li>
+    <li><strong>Competitor review:</strong> Indeed's application statuses, Greenhouse's MyGreenhouse portal, and the trackers Teal and Huntr.</li>
+    <li><strong>Candidate and recruiter stories:</strong> public posts and comments on Reddit, LinkedIn and Instagram, organised into two candidate and two recruiter composite profiles.</li>
+  </ul>
+  <p class="note">Composite profiles show patterns across many people, but they are not interviews. I treated every insight as a hypothesis to check in usability testing.</p>
+</div>
+  <div class="scroll"><table>
+    <thead><tr><th scope="col">Tool</th><th scope="col">Who sets the status</th><th scope="col">Where it falls short</th></tr></thead>
+    <tbody>
+      <tr><td><strong>LinkedIn today</strong></td><td>Employer (opt-in) and candidate</td><td>Three thin events; a rejection is missing from the list; a tracker many people never find</td></tr>
+      <tr><td><strong><a href="https://www.indeed.com/help/job-seekers/articles/4412589551757-my-jobs-managing-applied-jobs?hl=en&amp;co=GB" target="_blank" rel="noopener">Indeed</a></strong></td><td>Employer, Indeed and candidate</td><td>The richest statuses, including Indeed's own "Response seems unlikely", but some only on mobile</td></tr>
+      <tr><td><strong><a href="https://www.greenhouse.com/blog/meet-mygreenhouse-a-new-kind-of-candidate-portal" target="_blank" rel="noopener">MyGreenhouse</a></strong></td><td>Employer's hiring system</td><td>Stage-by-stage status, but only for Greenhouse employers</td></tr>
+      <tr><td><strong><a href="https://www.tealhq.com/tools/job-tracker" target="_blank" rel="noopener">Teal</a>, <a href="https://huntr.co/" target="_blank" rel="noopener">Huntr</a></strong></td><td>Candidate</td><td>Tidy boards, but every status is typed by hand</td></tr>
+    </tbody>
+  </table></div>
+  <div class="col" style="margin-top:18px"><p><strong>The most useful find:</strong> Indeed's "Response seems unlikely" proves a platform can end the silence itself, without waiting for an employer.</p></div>
+</section>
+
+<section><div class="col">
+  <span class="label">Insights</span>
+  <h2>Recruiters weren't against answering. The tools only offered a final no.</h2>
+  <ol class="ins">
+    <li><span><strong>The missing status is "still being considered".</strong> Recruiters hold candidates while a hiring manager decides, and won't reject anyone too early. They need an honest middle state.</span></li>
+    <li><span><strong>A promised date is where trust breaks.</strong> Both candidates' worst silence came after "we'll get back to you within a week".</span></li>
+    <li><span><strong>Reply times are welcome if they're measured, not promised.</strong> Both recruiters would show a typical range from their own history, like "7–10 days".</span></li>
+    <li><span><strong>One follow-up is fair on both sides.</strong> Candidates send one and stop, afraid of being a bother; recruiters accept one, but not repeated messages.</span></li>
+    <li><span><strong>Half of all applications happen off LinkedIn.</strong> Both candidates found jobs there but applied on company sites, then tracked them in a spreadsheet, their inbox or their head.</span></li>
+    <li><span><strong>People already decide when an application is dead,</strong> after two to four weeks of silence. The product can say it for them, kindly.</span></li>
+  </ol>
+  <p>The project started as a tracker redesign for candidates. The research turned it into a two-sided problem: make every outcome cheap to give and honest to receive.</p>
+</div></section>
+
+<section>
+  <div class="col"><span class="label">Personas</span><h2>Who I designed for</h2></div>
+  <div class="grid3">
+    <article class="persona"><span class="label">Primary</span><h3>Jordan, the spreadsheet keeper</h3><span class="trip">Software engineer · US · 48 applications a month</span><p>Applies on LinkedIn and on company sites, and tracks it all in a Google Sheet. Hears back from about six. Was ghosted after a final round.</p><p class="need"><strong>Needs:</strong> to know where he stands: being reviewed, still considered, or over.</p></article>
+    <article class="persona"><span class="label">Primary</span><h3>Bea, the selective applicant</h3><span class="trip">Marketing specialist · Philippines · 30 a month</span><p>Looks for remote roles and tracks them in her head and inbox. Ghosted after a first interview that promised an update within a week.</p><p class="need"><strong>Needs:</strong> to know if the job is still open, and "still being considered, decision next week".</p></article>
+    <article class="persona"><span class="label">Secondary</span><h3>Helen, a one-person recruiting team</h3><span class="trip">Recruiter · UK · 100–300 applicants a role</span><p>The only recruiter at a 70-person company. Sends automated rejections to some, never to everyone, and won't reject while a manager decides.</p><p class="need"><strong>Needs:</strong> one action that sends a decent, honest update to everyone waiting.</p></article>
+  </div>
+</section>
+
+<section>
+  <div class="col"><span class="label">Journey map</span><h2>Jordan loses hope while he waits, and again after the interview</h2></div>
+  <div class="scroll"><table>
+    <thead><tr><th scope="col">Stage</th><th scope="col">Mood</th><th scope="col">Pain today</th><th scope="col">What Standing does</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Applies</strong></td><td><span class="mood m-mid"><i></i>Mid</span></td><td>Half his applications are on company sites</td><td class="opp">One list for LinkedIn and outside applications</td></tr>
+      <tr><td><strong>Waits</strong></td><td><span class="mood m-low"><i></i>Low</span></td><td>"Applied" for weeks, nothing else</td><td class="opp">A measured reply window for this employer</td></tr>
+      <tr><td><strong>Gets viewed</strong></td><td><span class="mood m-mid"><i></i>Mid</span></td><td>"Viewed" appears for a few, then nothing more</td><td class="opp">A stage timeline with dates</td></tr>
+      <tr><td><strong>Interviews</strong></td><td><span class="mood m-high"><i></i>High</span></td><td>"We'll get back to you next week"</td><td class="opp">A decision date the recruiter sets</td></tr>
+      <tr><td><strong>Waits again</strong></td><td><span class="mood m-low"><i></i>Low</span></td><td>The week passes; one email, no reply</td><td class="opp">A reminder to the recruiter, and one "Ask for an update"</td></tr>
+      <tr><td><strong>Gets an answer</strong></td><td><span class="mood m-low"><i></i>Low</span></td><td>A rejection email, but the job still looks active</td><td class="opp">The outcome shown on the application itself</td></tr>
+      <tr><td><strong>Moves on</strong></td><td><span class="mood m-low"><i></i>Low</span></td><td>Calls it dead after 3–4 weeks; the list never clears</td><td class="opp">"Likely closed" keeps his list honest</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section><div class="col">
+  <span class="label">Principles and scope</span>
+  <h2>Four rules that decided what got built</h2>
+  <ol class="ins">
+    <li><span><strong>Every application ends in an answer.</strong> Silence becomes a status: a measured reply window, then "likely closed" when it passes.</span></li>
+    <li><span><strong>Measured, never promised.</strong> Reply times are ranges from an employer's own history. Only a recruiter sets a date.</span></li>
+    <li><span><strong>A no is information, not an error.</strong> Rejection appears in calm neutral ink. There's no red anywhere in the system.</span></li>
+    <li><span><strong>One step to be kind.</strong> Every recruiter action that closes a loop is a single step, for one person or 140.</span></li>
+  </ol>
+  <div class="scope">
+    <div class="box"><span class="label">In scope</span><ul><li>Applications grouped into In progress, Waiting and Closed</li><li>A reply window measured from the employer's history</li><li>"Still being considered", with a date the recruiter sets</li><li>"Ask for an update", once per stage</li><li>Clear outcomes and "likely closed" on the application itself</li><li>Adding an outside application</li><li>"Close the loop" for many applicants at once</li></ul></div>
+    <div class="box"><span class="label">Left out, on purpose</span><ul><li>Screening and ranking candidates</li><li>AI matching and resume tools</li><li>Messaging</li><li>How hiring systems connect to LinkedIn</li></ul><p>Each is a different problem, and the concept stays believable without them.</p></div>
+  </div>
+</div></section>
+
+<section>
+  <div class="col"><span class="label">User flows</span><h2>Nobody is rejected unless a person chooses to</h2><p>The platform only fills the silence with what it can measure. People make every decision.</p></div>
+  <div class="flows">
+    <div class="flow"><span class="label">Flow 1 · Jordan, applying to a clear outcome</span><ol>
+      <li>Applies on LinkedIn or a company site</li>
+      <li>Listed as Waiting, with a measured reply window</li>
+      <li class="dec">Update inside the window?<small>If not, he can ask once; if it's still silent, it's marked likely closed</small></li>
+      <li>The timeline moves: viewed, in review, interviewing</li>
+      <li>Still being considered, with a decision date</li>
+      <li class="dec">Decided on time?<small>If not, the recruiter is reminded and Jordan can ask once</small></li>
+      <li class="end">A clear outcome: offer, not moving forward, or filled</li>
+    </ol></div>
+    <div class="flow"><span class="label">Flow 2 · Helen, shortlist to closing the loop</span><ol>
+      <li>Reviews applicants on LinkedIn or her hiring system</li>
+      <li>Builds a shortlist and interviews the top few</li>
+      <li class="dec">Has the manager decided?<small>If not, she sets a decision date, shown as "still being considered"</small></li>
+      <li>Selects everyone not moving on, often 100 or more</li>
+      <li>Chooses "Close the loop" and edits the message, or not</li>
+      <li>Previews exactly what candidates will see, then sends</li>
+      <li class="end">Every application updates with a clear outcome</li>
+    </ol></div>
+  </div>
+  <div class="col" style="margin-top:18px"><p>The "still being considered" branch is what makes Helen willing to answer early: she can be honest without closing a door the hiring manager hasn't closed yet.</p></div>
+</section>
+
+<section>
+  <div class="col"><span class="label">Wireframes</span><h2>Nine screens in grey, then five changes</h2><p>Seven candidate screens on mobile and two recruiter screens on the web, to test the order of information before any colour.</p></div>
+  <figure class="wide"><img src="StandingWireframes.png" alt="Seven candidate wireframes: applications, in review, still being considered, ask for an update, closed, job post and outside application" loading="lazy" width="2400" height="748"></figure>
+  <div class="col">
+    <div class="changes">
+      <div><strong>A progress bar became a reply window</strong>The wireframe filled a bar toward day 10. The final design shades the employer's usual range on a 14-day track, so "day 6" reads as "not late yet", not "60% done".</div>
+      <div><strong>A date in a sentence became a calendar tile</strong>"Decision expected by Fri 9 Oct" was easy to skim past. An amber tile makes the one date a recruiter committed to impossible to miss.</div>
+      <div><strong>"No reply" became "Likely closed", with the reason</strong>The card says how long it's been and how long this employer usually takes, so the label reads as a measurement, not a verdict.</div>
+      <div><strong>The update request explains itself</strong>The sheet shows who will receive it and why it's available now: the decision date has passed.</div>
+    </div>
+    <p>The fifth change: <strong>recruiters see what candidates will see.</strong> The "Close the loop" dialog shows the exact status chip and date candidates will get, not a sentence describing it.</p>
+  </div>
+</section>
+
+<section id="solution">
+  <div class="col"><span class="label">The solution</span><h2>One honest list, and one step to answer everyone</h2>
+  <p>Standing turns a long list of "Applied" into three honest groups, and gives recruiters a single step to answer everyone waiting.</p></div>
+  <div class="screens">
+    <figure><img src="StandingList.png" alt="Applications in progress, and the Closed tab with clear answers and likely closed" loading="lazy" width="1816" height="1880"><figcaption><strong>A list that tells the truth.</strong> In progress, Waiting and Closed, with one line about time on every card. "Likely closed" explains itself: no reply in 24 days, from an employer that usually answers in 5–8.</figcaption></figure>
+    <figure><img src="StandingApply.png" alt="Job post with the reply range, and the prompt to add an outside application" loading="lazy" width="1816" height="1880"><figcaption><strong>Every application in one place.</strong> Job posts show how quickly the employer usually replies. Apply on a company site, and Standing asks whether to add it to the same list.</figcaption></figure>
+    <figure class="full"><img src="StandingDetail.png" alt="An application in review with what to do now and its reply window, still being considered with the decision date, and the ask for an update sheet" loading="lazy" width="2400" height="1702"><figcaption><strong>Where you stand, and for how long.</strong> Every application opens with what to do now. The reply window marks today against the employer's usual range. After an interview, a calendar tile shows the decision date the recruiter set. If it passes, Jordan can ask once, with a message that names the date.</figcaption></figure>
+    <figure class="full"><img src="StandingRecruiter.png" alt="Recruiter applicant list with 140 reviewed applicants selected" loading="lazy" width="2400" height="1500"><figcaption><strong>Close the loop for 140 people at once.</strong> Helen selects everyone she's reviewed and not shortlisted. Her own usual reply time sits at the top, measured from her replies and shown on her job post.</figcaption></figure>
+    <figure class="full"><img src="StandingCloseLoop.png" alt="Close the loop dialog with four answer types, an editable message and a preview" loading="lazy" width="2400" height="1500"><figcaption><strong>Four honest answers.</strong> Not moving forward, Position filled, Still being considered with a date, or Position on hold. The message greets each person by name, the preview shows exactly what candidates will see, and nothing is sent until Helen presses Send.</figcaption></figure>
+  </div>
+  <div class="col" style="margin-top:36px">
+    <h3>Design system</h3>
+    <p>A small system, also called Standing, built around time: a paper-white page, near-black ink and one plum accent. Each colour has one job.</p>
+    <div class="swatches" role="list">
+      <div class="sw" role="listitem"><i style="background:#17161a"></i><span><b>Ink</b>Text, clear answers</span></div>
+      <div class="sw" role="listitem"><i style="background:#5b2a6e"></i><span><b>Plum</b>Active, actions</span></div>
+      <div class="sw" role="listitem"><i style="background:#f6f5f1"></i><span><b>Paper</b>Background</span></div>
+      <div class="sw" role="listitem"><i style="background:#edebe5"></i><span><b>Sunk</b>Tracks, closed</span></div>
+      <div class="sw" role="listitem"><i style="background:#8a5300"></i><span><b>Amber</b>Decision dates</span></div>
+      <div class="sw" role="listitem"><i style="background:#1f6b3a"></i><span><b>Green</b>Offers, job open</span></div>
+    </div>
+    <div class="chips" aria-label="Status chips">
+      <span style="border:1px solid #8c877d;color:#5e5a63;padding:3px 9px">Applied</span>
+      <span style="background:#f1e8f4;color:#5b2a6e">In review</span>
+      <span style="background:#fbf0da;color:#8a5300">Still being considered</span>
+      <span style="background:#e3f3e8;color:#1f6b3a">Offer</span>
+      <span style="background:#edebe5;color:#17161a">Not moving forward</span>
+      <span style="border:1px dashed #8c877d;color:#5e5a63;padding:3px 9px">Likely closed</span>
+    </div>
+    <div class="type">
+      <div><small>Text · Hanken Grotesk</small><span class="a">Still being considered</span></div>
+      <div><small>Dates and day counts · tabular figures</small><span class="m">Day 6 of a usual 7–10</span></div>
+    </div>
+    <p><strong>No red, anywhere.</strong> A no is information, not an error, so closed outcomes use neutral ink and amber is kept for the one time-bound state. Tabular figures line dates up like a ledger, and every status carries a word, never colour alone.</p>
+    <figure><img src="StandingSystem.png" alt="Standing design system: palette, status chips, reply window, decision date tile and buttons" loading="lazy" width="2400" height="1024"><figcaption>The two signature components: the reply window for measured time, and the decision-date tile for dates people commit to.</figcaption></figure>
+  </div>
+</section>
+
+<section><div class="col">
+  <span class="label">Validation</span>
+  <h2>One candidate, one recruiter, six tasks, no help needed</h2>
+  <p>I tested the prototype with a software engineer in the US who sent 48 applications this month, and an in-house recruiter at a 400-person company whose roles get 150–250 applicants. The candidate tried five tasks: find what to stop waiting on, read a reply window, ask for an update after a missed date, add an outside application, and move one back after a reply. The recruiter closed the loop for 140 people.</p>
+  <div class="results">
+    <div>Task success</div><div><strong>6 of 6</strong> tasks finished without help</div>
+    <div>Candidate ease rating</div><div><strong>4.5 / 5</strong> average across his five tasks</div>
+    <div>Recruiter ease rating</div><div><strong>5 / 5</strong> to close the loop for 140 people</div>
+    <div>Reply window</div><div><strong>Read correctly:</strong> the shaded part is the usual reply time, the marker is today. It took a few seconds the first time</div>
+    <div>"Likely closed"</div><div><strong>Felt fair,</strong> not harsh</div>
+    <div>Default message</div><div><strong>Would send it,</strong> made slightly more personal</div>
+    <div>Would use it</div><div><strong>2 of 2</strong></div>
+  </div>
+  <p class="q">"My spreadsheet tells me what I applied to, but it doesn't really tell me when I should stop waiting or when it's appropriate to follow up."</p>
+  <p class="q">"The biggest problem isn't that I don't want to reply. It's the amount of manual work."</p>
+  <h3>What I changed after testing</h3>
+  <ul>
+    <li><strong>Every application says what to do now.</strong> The candidate asked for an obvious "what should I do?" on each application. Each one now opens with a single next step: wait, follow up, stop waiting or prepare, with the date that changes it.</li>
+    <li><strong>The reply window got a legend.</strong> The shaded bar took a few seconds to read. A legend under it now names both parts: the usual reply time over the last 90 days, and today.</li>
+    <li><strong>Nothing is sent without a review.</strong> The recruiter wasn't sure whether the message would go out automatically. The selection bar and the dialog now say nothing is sent until she presses Send.</li>
+    <li><strong>Messages greet each person by name.</strong> She wanted it more personal without editing 140 messages, so the message starts with "Hi {first name}".</li>
+    <li><strong>"Position on hold" became a fourth answer.</strong> She asked for more ready-made statuses. "Still reviewing" was already covered by "Still being considered".</li>
+  </ul>
+  <figure><img src="StandingTested.png" alt="Tidewell application before and after testing: a next step at the top and a legend under the reply window" loading="lazy" width="1816" height="1880"><figcaption>Tidewell before and after: a next step at the top, and a legend under the reply window.</figcaption></figure>
+</div>
+  <figure class="wide"><img src="StandingTestedRecruiter.png" alt="Close the loop dialog before and after testing: four answers, a note that nothing is sent until you press Send, and a greeting by name" loading="lazy" width="2400" height="1112"><figcaption>Close the loop before and after: a fourth answer, a clear note that nothing is sent until you press Send, and a greeting by name.</figcaption></figure>
+  <div class="col"><p class="note">Two participants is a small sample, so I read these as signals rather than proof. Both came from my own network, so the next round should include candidates outside tech and recruiters at larger companies.</p></div>
+</section>
+
+<section><div class="col">
+  <span class="label">Reflection</span>
+  <h2>The most valuable decision was adding a middle, not more endings</h2>
+  <ul>
+    <li><strong>Honesty needs a middle.</strong> Recruiters stayed silent because the only answer available was a final no. "Still being considered", with a date, lets them be honest early.</li>
+    <li><strong>Measure, don't promise.</strong> Showing an employer's real reply time is fairer than any promise, and it quietly rewards the employers who reply.</li>
+    <li><strong>Redesign inside the constraints.</strong> Standing reuses what LinkedIn already has (a tracker, status events, rejection tools) and makes it visible and cheap to use. That's what makes it believable.</li>
+  </ul>
+  <p><strong>Next:</strong> test with candidates outside tech and recruiters at larger companies, then design the recruiter's one-tap reply to an update request and a weekly summary notification.</p>
+  <p class="note">Not affiliated with LinkedIn. The designs use their own visual language and no LinkedIn logo or brand assets.</p>
+</div></section>
+
+<div class="final">
+  <h2>See where Jordan stands</h2>
+  <a class="btn solid" href="standing-app.html">Open the live prototype →</a>
+</div>
+
+<nav class="next" aria-label="More work"><a href="onward.html">← Onward</a><a href="index.html#work">All work →</a></nav>
+<script>(function(){var h=location.hash&&document.getElementById(location.hash.slice(1));try{(h||document.body).scrollIntoView({block:"start"});}catch(e){}})();</script>
+</body>
+</html>

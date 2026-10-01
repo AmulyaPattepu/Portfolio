@@ -1,0 +1,604 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Onward · Prototype by Amulya</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Atkinson+Hyperlegible+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ground:#f4f5f2;--surface:#ffffff;--sunk:#e9ebe7;--line:#d5d8d2;--strong:#8a8f88;--ink:#15181b;--muted:#5a6066;
+  --sign:#1d2125;--sign2:#2e343a;--on-sign:#ffffff;--on-sign-m:#b8bec4;--signal:#ffd23f;--on-signal:#15181b;--link:#1d4ed8;
+  --red:#b42318;--red-t:#fde8e6;--amber:#8a5300;--amber-t:#fdf0d8;--green:#1f6b3a;--green-t:#e3f3e8;
+  --desk:#e6e8e3;--scrim:rgba(21,24,27,.45);
+  --font:'Atkinson Hyperlegible',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --mono:'Atkinson Hyperlegible Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --ground:#121417;--surface:#1c1f23;--sunk:#0c0e10;--line:#2e3238;--strong:#858b93;--ink:#f1f2ee;--muted:#a9afb6;
+  --sign:#262b31;--sign2:#3a4148;--on-sign:#f1f2ee;--on-sign-m:#a9afb6;--link:#8fb0ff;
+  --red:#ff8a80;--red-t:#3b1715;--amber:#f7b955;--amber-t:#3a2a10;--green:#7dd49b;--green-t:#15301f;
+  --desk:#0a0b0d;--scrim:rgba(0,0,0,.6);color-scheme:dark}}
+:root[data-theme="dark"]{
+  --ground:#121417;--surface:#1c1f23;--sunk:#0c0e10;--line:#2e3238;--strong:#858b93;--ink:#f1f2ee;--muted:#a9afb6;
+  --sign:#262b31;--sign2:#3a4148;--on-sign:#f1f2ee;--on-sign-m:#a9afb6;--link:#8fb0ff;
+  --red:#ff8a80;--red-t:#3b1715;--amber:#f7b955;--amber-t:#3a2a10;--green:#7dd49b;--green-t:#15301f;
+  --desk:#0a0b0d;--scrim:rgba(0,0,0,.6);color-scheme:dark}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--desk);color:var(--ink);font:17px/26px var(--font);font-variant-numeric:tabular-nums;-webkit-font-smoothing:antialiased;display:flex;flex-direction:column}
+button,input{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--link);outline-offset:2px}
+a{color:var(--link)}
+h1,h2,p{margin:0}
+.mono{font-family:var(--mono)}
+.label{font-size:13px;line-height:16px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+.demo{display:flex;flex-wrap:wrap;align-items:center;gap:8px 16px;padding:8px 16px;padding-top:calc(8px + env(safe-area-inset-top,0px));background:#15181b;color:#f4f5f2;font-size:14px;line-height:20px}
+.demo a{color:#f4f5f2;font-weight:700;display:inline-flex;align-items:center;min-height:40px}
+.demo .short{display:none}
+.scene{display:none}
+.scene select{min-height:36px;border-radius:999px;border:1px solid #f4f5f2;background:#15181b;color:#f4f5f2;padding:0 10px;font-size:13px;max-width:200px}
+.demo button{background:transparent;border:1px solid currentColor;color:#f4f5f2;border-radius:999px;padding:0 14px;font-size:13px;min-height:36px}
+.demo .sp{flex:1}
+
+.stage{flex:1;display:flex;gap:56px;align-items:center;justify-content:center;padding:28px 24px;min-height:0}
+.guide{width:340px;display:flex;flex-direction:column;gap:18px;color:var(--ink)}
+.guide h2{font-size:30px;line-height:36px;font-weight:700}
+.guide p{color:var(--muted)}
+.guide ol{margin:0;padding-left:22px;display:flex;flex-direction:column;gap:6px}
+.jumps{display:flex;flex-wrap:wrap;gap:8px}
+.jumps button{min-height:40px;padding:0 14px;border-radius:999px;border:1.5px solid var(--strong);background:var(--surface);font-size:15px;font-weight:700}
+.jumps button:hover{border-color:var(--ink)}
+
+.phone{position:relative;width:410px;height:min(844px,calc(100dvh - 120px));min-height:600px;border-radius:44px;overflow:hidden;background:var(--ground);border:10px solid #0b0c0e;box-shadow:0 20px 60px rgba(0,0,0,.25);flex-shrink:0;display:flex;flex-direction:column}
+.screen{flex:1;display:flex;flex-direction:column;min-height:0}
+.scroll{flex:1;overflow-y:auto;overflow-x:hidden;display:flex;flex-direction:column;gap:12px;padding:16px;min-height:0;overscroll-behavior:contain}
+.scroll.tight{padding-top:4px}
+.scroll>*,.lock>*,.agent>*,.sheet>*{flex-shrink:0}
+
+.bar{display:flex;align-items:center;gap:4px;padding:12px 12px 6px 6px}
+.icon-btn{width:44px;height:44px;display:flex;align-items:center;justify-content:center;border-radius:999px;border:0;background:transparent;color:var(--ink);flex-shrink:0}
+.icon-btn:hover{background:var(--sunk)}
+.bar h1{font-size:24px;line-height:30px;font-weight:700}
+h1[tabindex]:focus{outline:none}
+
+.chip{font-size:13px;line-height:16px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:5px 8px;border-radius:6px;white-space:nowrap;display:inline-block}
+.chip.red{background:var(--red-t);color:var(--red)}
+.chip.green{background:var(--green-t);color:var(--green)}
+.chip.amber{background:var(--amber-t);color:var(--amber)}
+.chip.outline{border:1.5px solid var(--line);color:var(--muted);padding:3.5px 6.5px}
+
+.strip{margin:0 16px;display:flex;align-items:center;gap:10px;padding:10px 12px 10px 14px;border-radius:12px;background:var(--sign);color:var(--on-sign);font-family:var(--mono);font-size:15px}
+.strip b{font-weight:700}
+.strip .div{width:1px;height:18px;background:var(--sign2)}
+.strip .rt{flex:1}
+
+.board{margin:16px 16px 0;background:var(--sign);color:var(--on-sign);border-radius:20px;padding:16px 18px;display:flex;flex-direction:column;gap:12px}
+.board .top{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.board .top .label{color:var(--on-sign-m)}
+.route{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:12px}
+.code{font-family:var(--mono);font-size:40px;line-height:44px;font-weight:700}
+.city{font-size:14px;line-height:18px;color:var(--on-sign-m)}
+.path{display:flex;align-items:center;gap:6px;color:var(--on-sign-m)}
+.path i{flex:1;border-top:2px dashed var(--sign2)}
+.path .x{width:26px;height:26px;border-radius:999px;border:2px solid var(--red);color:var(--red);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px;line-height:1;font-style:normal}
+.path .ok{color:var(--signal);display:flex}
+.board .foot{display:flex;justify-content:space-between;gap:8px;padding-top:10px;border-top:1px solid var(--sign2);font-size:14px;line-height:20px;color:var(--on-sign-m)}
+.board .foot .mono{color:var(--on-sign)}
+
+.tracker{margin:0;padding:0;list-style:none;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.tracker li{display:flex;flex-direction:column;gap:6px}
+.tracker .b{height:6px;border-radius:999px;background:var(--line)}
+.tracker .t{display:flex;align-items:center;gap:4px;font-size:14px;line-height:18px;color:var(--muted)}
+.tracker .done .b{background:var(--ink)}
+.tracker .done .t,.tracker .now .t{color:var(--ink);font-weight:700}
+.tracker .now .b{background:var(--amber)}
+
+.card{background:var(--surface);border:1.5px solid var(--line);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:8px}
+.steps{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px}
+.step{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:14px;background:var(--surface);border:1.5px solid var(--line);width:100%;text-align:left;color:var(--ink)}
+button.step:hover{border-color:var(--strong)}
+.step.now{border:2px solid var(--ink);padding:11.5px 13.5px}
+.step .n{flex-shrink:0;width:30px;height:30px;border-radius:999px;border:2px solid var(--strong);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px}
+.step.now .n{background:var(--ink);border-color:var(--ink);color:var(--ground)}
+.step.ok .n{background:var(--green-t);border-color:var(--green);color:var(--green)}
+.step .tx{flex:1;min-width:0}
+.step strong{display:block;font-size:17px;line-height:23px}
+.step .d{display:block;font-size:14px;line-height:20px;color:var(--muted)}
+.call{flex-shrink:0;width:44px;height:44px;border-radius:999px;border:1.5px solid var(--strong);background:var(--surface);color:var(--ink);display:flex;align-items:center;justify-content:center}
+
+.tiles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.tile{background:var(--surface);border:1.5px solid var(--line);border-radius:14px;padding:14px;display:flex;flex-direction:column;text-align:left;color:var(--ink);min-height:104px}
+.tile:hover,.row:hover{border-color:var(--strong)}
+.tile .big{font-family:var(--mono);font-size:30px;line-height:38px;font-weight:700}
+.tile .ic{display:flex;gap:6px;margin:6px 0 4px}
+.tile small,.row small{font-size:14px;line-height:18px;color:var(--muted)}
+.row{display:flex;align-items:center;gap:12px;background:var(--surface);border:1.5px solid var(--line);border-radius:14px;padding:12px 14px;width:100%;text-align:left;color:var(--ink)}
+.row .tx{flex:1;display:flex;flex-direction:column}
+.sq{flex-shrink:0;width:44px;height:44px;border-radius:12px;background:var(--sunk);color:var(--ink);display:flex;align-items:center;justify-content:center}
+
+.opt{position:relative;display:flex;flex-direction:column;gap:6px;padding:14px 16px;border-radius:14px;background:var(--surface);border:1.5px solid var(--line);cursor:pointer}
+.opt:has(input:checked){border:2.5px solid var(--ink);padding:13px 15px}
+.opt:has(input:focus-visible){outline:3px solid var(--link);outline-offset:2px}
+.opt input{position:absolute;opacity:0;width:1px;height:1px}
+.opt .hd{display:flex;align-items:center;gap:10px}
+.radio{flex-shrink:0;width:24px;height:24px;border-radius:999px;border:2px solid var(--strong)}
+.opt input:checked ~ .hd .radio{border:7px solid var(--ink)}
+.opt .hd strong{flex:1;font-size:18px;line-height:24px}
+.times{display:flex;align-items:flex-end;gap:14px;padding-left:34px}
+.times strong{font-family:var(--mono);font-size:28px;line-height:34px}
+.times .ar{color:var(--muted);padding-bottom:6px}
+.opt .meta{display:flex;justify-content:space-between;gap:8px;padding-left:34px;font-family:var(--mono);font-size:13px;line-height:18px;color:var(--muted)}
+.opt .meta b{white-space:nowrap;color:var(--ink)}
+.opt .note{padding-left:34px;font-size:15px;line-height:21px;color:var(--muted)}
+
+.list{margin:0;padding:0 16px;list-style:none;background:var(--surface);border:1.5px solid var(--line);border-radius:14px}
+.list li{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}
+.list li:last-child{border-bottom:0}
+.list .tx{flex:1;min-width:0}
+.list strong{display:block}
+.list .d{display:block;font-size:14px;line-height:20px;color:var(--muted)}
+.toggle{border:0;background:transparent;padding:0;min-height:44px;min-width:56px;display:flex;align-items:center;justify-content:flex-end}
+.toggle:disabled{cursor:default}
+.rm{width:36px;height:36px;border-radius:999px;border:0;background:transparent;color:var(--muted);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.rm:hover{background:var(--sunk);color:var(--ink)}
+.empty{padding:16px 0;color:var(--muted);font-size:15px;line-height:22px}
+
+.hero{background:var(--sign);color:var(--on-sign);border-radius:16px;padding:16px 18px;display:flex;flex-direction:column;gap:2px}
+.hero .label{color:var(--on-sign-m)}
+.hero .amt{font-family:var(--mono);font-size:56px;line-height:64px;font-weight:700}
+.hero small{font-size:15px;line-height:22px;color:var(--on-sign-m)}
+.hero .caveat{margin-top:10px;padding-top:10px;border-top:1px solid var(--sign2);font-size:15px;line-height:21px}
+.hero .caveat strong{color:var(--signal)}
+.saved{display:flex;align-items:center;gap:6px;font-size:14px;line-height:20px;font-weight:700;color:var(--green)}
+.howto{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px;font-size:16px;line-height:22px}
+.howto li{display:flex;gap:10px;align-items:center;min-height:40px}
+.howto .k{flex-shrink:0;width:24px;height:24px;border-radius:999px;background:var(--ink);color:var(--ground);font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center}
+.howto li.ok .k{background:var(--green)}
+.howto .tx{flex:1}
+.btn.sm{min-height:40px;padding:0 14px;font-size:15px}
+.checks{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:6px;font-size:16px;line-height:22px}
+.checks li{display:flex;gap:10px}
+.checks svg{color:var(--green);flex-shrink:0;margin-top:2px}
+.warn{background:var(--amber-t);color:var(--ink);border-radius:10px;padding:10px 12px;font-size:15px;line-height:21px}
+.warn-card{background:var(--amber-t);border-color:var(--amber)}
+.warn-card strong{color:var(--amber)}
+
+.stub{border-radius:20px;overflow:hidden;border:1.5px solid var(--line);background:var(--surface)}
+.stub .hd{background:var(--sign);color:var(--on-sign);padding:16px 18px;display:flex;flex-direction:column;gap:8px}
+.stub .hd .label{color:var(--on-sign-m)}
+.stub .perf{position:relative;height:0;border-top:2px dashed var(--line);margin:0 18px}
+.stub .perf::before,.stub .perf::after{content:"";position:absolute;top:-11px;width:20px;height:20px;border-radius:999px;background:var(--ground)}
+.stub .perf::before{left:-29px;border-right:1.5px solid var(--line)}
+.stub .perf::after{right:-29px;border-left:1.5px solid var(--line)}
+.stub .bd{padding:16px 18px;display:flex;flex-direction:column;gap:10px}
+.kv{display:flex;justify-content:space-between;align-items:center;gap:12px;font-size:16px}
+.kv span:first-child{color:var(--muted)}
+.kv .lnk{border:0;background:transparent;padding:0 4px;color:var(--link);text-decoration:underline;font-size:16px;min-height:44px}
+.total{display:flex;justify-content:space-between;align-items:center;padding-top:10px;border-top:1px solid var(--line)}
+.total .mono{font-size:22px;font-weight:700}
+.switch{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-direction:row;padding:12px 16px;cursor:pointer}
+.switch input{width:26px;height:26px;margin:0;accent-color:var(--ink);flex-shrink:0}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:0 16px;border-radius:12px;border:1.5px solid var(--strong);background:var(--surface);color:var(--ink);font-weight:700;text-decoration:none}
+.btn:hover{border-color:var(--ink)}
+.btn.primary{background:var(--ink);border-color:var(--ink);color:var(--ground)}
+.btn.block{width:100%}
+.muted{color:var(--muted)}
+.small{font-size:14px;line-height:20px}
+.done-banner{display:flex;gap:10px;align-items:flex-start;background:var(--green-t);border-radius:12px;padding:12px 14px;font-size:15px;line-height:21px}
+.done-banner svg{color:var(--green);flex-shrink:0;margin-top:2px}
+
+.nextwrap{padding:10px 16px 20px;background:var(--ground);border-top:1px solid var(--line)}
+.next{display:flex;align-items:center;gap:12px;width:100%;min-height:64px;padding:10px 12px 10px 18px;background:var(--signal);color:var(--on-signal);border:0;border-radius:14px;text-align:left}
+.next .tx{flex:1;display:flex;flex-direction:column}
+.next .label{color:var(--on-signal)}
+.next strong{font-size:18px;line-height:24px}
+.next .go{flex-shrink:0;width:44px;height:44px;border-radius:999px;background:var(--on-signal);color:var(--signal);display:flex;align-items:center;justify-content:center}
+.next:hover .go{transform:translateX(2px)}
+
+.lock{flex:1;background:#2b3036;color:#fff;display:flex;flex-direction:column;align-items:center;padding:64px 16px 28px;gap:14px;overflow-y:auto}
+.lock .clock{font-size:84px;line-height:88px;font-weight:700}
+.lock .day{font-size:17px;color:#c9ced3;margin-bottom:18px}
+.note-card{width:100%;background:rgba(255,255,255,.94);color:#15181b;border-radius:22px;padding:14px 16px;display:flex;gap:12px;border:0;text-align:left}
+.note-card .ap{flex-shrink:0;width:38px;height:38px;border-radius:10px;background:#1d2125;color:#ffd23f;display:flex;align-items:center;justify-content:center}
+.note-card .tx{display:flex;flex-direction:column;gap:2px}
+.note-card .tx span{font-size:15px;line-height:21px}
+.live{width:100%;background:#1d2125;color:#fff;border-radius:22px;overflow:hidden;display:flex;flex-direction:column;border:0;padding:0;text-align:left}
+.live .in{padding:16px;display:flex;flex-direction:column;gap:10px;width:100%}
+.live .r{display:flex;justify-content:space-between;align-items:center;font-family:var(--mono);font-size:24px;font-weight:700}
+.live .r i{font-style:normal;color:#b8bec4}
+.live .pr{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px}
+.live .pr span{height:6px;border-radius:999px;background:#3a4148}
+.live .pr span:first-child{background:#f7b955}
+.live .ns{background:#ffd23f;color:#15181b;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;width:100%}
+.live .ns .label{color:#15181b;display:block}
+.live .chip.red{background:#fde8e6;color:#b42318}
+.lock .open{color:#fff;font-size:15px;background:transparent;border:0;text-decoration:underline;min-height:44px}
+
+.agent{flex:1;background:var(--sign);color:var(--on-sign);padding:24px 24px 24px;display:flex;flex-direction:column;gap:22px;overflow-y:auto}
+.agent .top{display:flex;justify-content:space-between;align-items:center;gap:8px;font-family:var(--mono);font-size:15px;color:var(--on-sign-m)}
+.agent p{font-size:31px;line-height:39px;font-weight:700}
+.agent ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:14px;font-size:26px;line-height:32px}
+.agent li{display:flex;gap:14px;align-items:center}
+.agent li svg{color:var(--signal)}
+.agent .thanks{font-size:22px;line-height:30px;color:var(--on-sign-m);margin-top:auto}
+.agent .done{display:flex;align-items:center;justify-content:center;min-height:54px;border-radius:14px;border:1.5px solid var(--on-sign-m);background:transparent;color:var(--on-sign);font-weight:700}
+
+.sheet-wrap{position:absolute;inset:0;background:var(--scrim);display:flex;align-items:flex-end;z-index:5}
+.sheet-wrap[hidden]{display:none}
+.sheet{width:100%;background:var(--ground);border-radius:22px 22px 0 0;padding:10px 16px 20px;display:flex;flex-direction:column;gap:12px;max-height:90%;overflow-y:auto}
+.sheet .grab{width:40px;height:5px;border-radius:999px;background:var(--line);align-self:center}
+.sheet h2{font-size:22px;line-height:28px;font-weight:700}
+.sheet .acts{display:flex;flex-direction:column;gap:8px;margin-top:4px}
+.field{display:flex;flex-direction:column;gap:6px}
+.field span{font-weight:700;font-size:15px}
+.field input{min-height:48px;border-radius:12px;border:1.5px solid var(--strong);background:var(--surface);padding:0 14px}
+.field input[aria-invalid="true"]{border-color:var(--red)}
+.err{color:var(--red);font-size:14px;line-height:20px}
+.seg{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.seg button{min-height:44px;border-radius:10px;border:1.5px solid var(--line);background:var(--surface);font-size:14px;font-weight:700}
+.seg button[aria-pressed="true"]{border:2px solid var(--ink);background:var(--sunk)}
+.quote{background:var(--surface);border-left:4px solid var(--signal);border-radius:8px;padding:12px 14px;font-size:18px;line-height:26px;font-weight:700}
+
+.toast{position:absolute;left:16px;right:16px;bottom:104px;background:var(--ink);color:var(--ground);padding:12px 14px;border-radius:12px;font-size:15px;line-height:21px;z-index:6;box-shadow:0 8px 24px rgba(0,0,0,.25)}
+.toast[hidden]{display:none}
+
+@media (max-width:860px){.guide{display:none}.scene{display:inline-flex}}
+@media (max-width:600px){
+  body{background:var(--ground)}
+  .demo .hint,.demo .sp,.demo strong{display:none}
+  .demo .long{display:none}.demo .short{display:inline}
+  .demo{gap:8px 10px;justify-content:space-between}
+  .stage{padding:0;display:flex;flex-direction:column;align-items:stretch}
+  .phone{width:100%;height:auto;flex:1;min-height:0;border:0;border-radius:0;box-shadow:none}
+  .nextwrap{padding-bottom:calc(16px + env(safe-area-inset-bottom,0px))}
+}
+@media (max-height:700px) and (min-width:601px){.phone{min-height:0;height:calc(100dvh - 90px)}}
+@media (prefers-reduced-motion:no-preference){.next .go{transition:transform .15s}}
+</style>
+</head>
+<body>
+<div class="demo" role="note">
+  <strong>Interactive prototype</strong><span class="hint">Sample data. Nothing is booked or sent.</span>
+  <span class="sp"></span>
+  <label class="scene"><span class="sr">Jump to a screen</span><select data-act="scene">
+    <option value="">Jump to…</option><option value="lock">Lock screen</option><option value="plan">Plan</option><option value="options">Options</option><option value="care">Ask the desk</option><option value="owed">What you may be owed</option><option value="claim">Claim pack</option><option value="notowed">Dana’s flight, nothing owed</option></select></label>
+  <button type="button" data-act="theme">Dark mode</button>
+  <button type="button" data-act="reset">Reset demo</button>
+  <a href="onward.html"><span class="long">Back to case study</span><span class="short">Case study</span></a>
+</div>
+<div class="stage">
+  <aside class="guide" aria-labelledby="g-h">
+    <span class="label">Onward · Maya's evening</span>
+    <h2 id="g-h">Flight 1404 to Rome has just been cancelled.</h2>
+    <p>You're Maya at gate F32 in Paris. Get rebooked, looked after and ready to claim, before the desk queue decides for you.</p>
+    <ol>
+      <li>Tap the alert on the lock screen.</li>
+      <li>Pick a flight and rebook.</li>
+      <li>Mark what the desk gave you, or show the agent.</li>
+      <li>Add a receipt, then open your claim pack.</li>
+    </ol>
+    <span class="label">Jump to</span>
+    <div class="jumps">
+      <button type="button" data-act="jump" data-to="lock">Lock screen</button>
+      <button type="button" data-act="jump" data-to="plan">Plan</button>
+      <button type="button" data-act="jump" data-to="options">Options</button>
+      <button type="button" data-act="jump" data-to="care">Ask the desk</button>
+      <button type="button" data-act="jump" data-to="owed">What you're owed</button>
+      <button type="button" data-act="jump" data-to="claim">Claim pack</button>
+      <button type="button" data-act="jump" data-to="notowed">Dana's flight, nothing owed</button>
+    </div>
+  </aside>
+  <div class="phone" id="phone">
+    <main class="screen" id="screen"></main>
+    <div class="sheet-wrap" id="sheet" hidden></div>
+    <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+  </div>
+</div>
+<script>
+(function(){
+const S = (p, s = 22, w = 2) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${p}</svg>`;
+const I = {
+  back:'<path d="M15 18l-6-6 6-6"/>', chev:'<path d="M9 18l6-6-6-6"/>', check:'<path d="M20 6 9 17l-5-5"/>', x:'<path d="M18 6 6 18M6 6l12 12"/>',
+  phone:'<path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/>',
+  bed:'<path d="M2 4v16M2 8h18a2 2 0 0 1 2 2v10M2 17h20M6 8v9"/>',
+  car:'<path d="M19 17h2v-4l-2-5H5L3 13v4h2"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/><path d="M9 17h6"/>',
+  food:'<path d="M3 2v7a3 3 0 0 0 3 3v10M9 2v7a3 3 0 0 1-3 3M6 2v20M21 15V2a5 5 0 0 0-5 5v6h5zm0 0v7"/>',
+  msg:'<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>',
+  receipt:'<path d="M5 3v18l3-2 2 2 2-2 2 2 2-2 3 2V3l-3 2-2-2-2 2-2-2-2 2z"/><path d="M9 9h6M9 13h6"/>',
+  plane:'<path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"/>'
+};
+const CAT = {meal:{icon:'food', name:'Meal'}, transport:{icon:'car', name:'Taxi'}, hotel:{icon:'bed', name:'Hotel'}, other:{icon:'receipt', name:'Other'}};
+const OPTIONS = {
+  morning:{title:'Tomorrow morning', chip:['Free + hotel','green'], dep:'07:10', arr:'09:15', later:'+12h 30m', route:'CDG → FCO · direct', note:'Same airline. Tonight’s hotel is on them.', next:'Rebook 07:10 in the airline app'},
+  milan:{title:'Tonight via Milan', chip:['Earliest','outline'], dep:'21:40', arr:'00:55', later:'+4h 10m', route:'CDG → MXP → FCO', note:'Partner airline. The desk has to book it.', next:'Ask the desk for the 21:40 via Milan'},
+  refund:{title:'Refund instead', note:'Money back in 7 days. The airline no longer has to get you to Rome.', next:'Request a refund in the airline app'}
+};
+const CARE = [
+  {id:'hotel', icon:'bed', t:'A hotel tonight'},
+  {id:'transport', icon:'car', t:'Transport to the hotel', d:'Taxi or shuttle, both ways'},
+  {id:'meals', icon:'food', t:'Meal vouchers', d:'Dinner tonight, breakfast tomorrow'},
+  {id:'calls', icon:'msg', t:'Two calls or emails', d:'To tell people you’re late'}
+];
+const fresh = () => ({
+  screen:'lock', stack:[], queue:false, option:'morning', rebooked:null,
+  care:{hotel:'ask', transport:'ask', meals:'ask', calls:'ask'},
+  receipts:[{id:1, cat:'meal', t:'Sandwich and water', d:'Friday 18:15', amt:12.5}],
+  nextId:2, remind:true, claimSent:false, copied:false
+});
+let st = fresh();
+const $screen = document.getElementById('screen'), $sheet = document.getElementById('sheet'), $toast = document.getElementById('toast');
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const eur = n => '€' + n.toFixed(2);
+const spent = () => st.receipts.reduce((a, r) => a + r.amt, 0);
+const careNeeded = id => !((id === 'hotel' || id === 'transport') && (st.rebooked === 'milan' || st.rebooked === 'refund'));
+const lookedAfter = () => CARE.every(c => !careNeeded(c.id) || st.care[c.id] === 'got');
+const ASK = {hotel:'a hotel', transport:'transport', meals:'meals', calls:'calls'};
+const listWords = a => a.length < 2 ? (a[0] || '') : a.slice(0, -1).join(', ') + ' and ' + a.at(-1);
+const cap = t => t ? t[0].toUpperCase() + t.slice(1) : t;
+const stillToAsk = (ids = Object.keys(ASK)) => ids.filter(id => careNeeded(id) && st.care[id] !== 'got');
+const careWords = () => cap(listWords(stillToAsk().map(id => ASK[id])));
+
+const chip = (t, k) => `<span class="chip ${k}">${t}</span>`;
+const bar = (title) => `<header class="bar"><button type="button" class="icon-btn" data-act="back" aria-label="Back">${S(I.back, 26, 2.25)}</button><h1 tabindex="-1">${title}</h1></header>`;
+const strip = (num = '1404', route = 'CDG → FCO') => {
+  const s = num === '1404' && st.rebooked ? (st.rebooked === 'refund' ? chip('Refunding','amber') : chip('Rebooked','green')) : chip('Cancelled','red');
+  return `<div class="strip"><b>${num}</b><span class="div" aria-hidden="true"></span><span class="rt">${route}</span>${s}</div>`;
+};
+const tracker = () => {
+  const done = [!!st.rebooked, lookedAfter(), st.claimSent], cur = done.indexOf(false), names = ['Rebook', 'Looked after', 'Owed'];
+  return `<ol class="tracker" aria-label="Recovery progress">${names.map((n, i) => {
+    const cls = done[i] ? 'done' : i === cur ? 'now' : '';
+    const sr = done[i] ? ', done' : i === cur ? ', current step' : '';
+    return `<li class="${cls}"><span class="b" aria-hidden="true"></span><span class="t">${done[i] ? S(I.check, 14, 3) : ''}${n}<span class="sr">${sr}</span></span></li>`;
+  }).join('')}</ol>`;
+};
+const next = (text, act, to = '') => `<div class="nextwrap"><button type="button" class="next" data-act="${act}" data-to="${to}"><span class="tx"><span class="label">Next step</span><strong>${text}</strong></span><span class="go" aria-hidden="true">${S(I.chev, 24, 2.5)}</span></button></div>`;
+
+const screens = {
+  lock(){
+    return `<div class="lock"><h1 class="sr" tabindex="-1">Lock screen</h1>
+      <div class="clock" aria-hidden="true">18:52</div><div class="day" aria-hidden="true">Friday</div>
+      <button type="button" class="note-card" data-act="go" data-to="plan"><span class="ap" aria-hidden="true">${S(I.chev, 22, 2.75)}</span><span class="tx"><strong>Flight 1404 cancelled</strong><span>Rebook in the airline app now, before the desk queue grows.</span></span></button>
+      <button type="button" class="live" data-act="go" data-to="plan" aria-label="Flight 1404, Paris to Rome, cancelled. Next step: rebook in the airline app.">
+        <span class="in"><span class="r"><span>CDG <i>→</i> FCO</span>${chip('Cancelled','red')}</span><span class="pr"><span></span><span></span><span></span></span></span>
+        <span class="ns"><span><span class="label">Next step</span><strong>Rebook in the airline app</strong></span>${S(I.chev, 22, 2.75)}</span>
+      </button>
+      <div style="flex:1"></div>
+      <button type="button" class="open" data-act="go" data-to="plan">Open Onward</button></div>`;
+  },
+  plan(){
+    const o = st.rebooked && st.rebooked !== 'refund' ? OPTIONS[st.rebooked] : null;
+    const route = `<div class="route"><div><div class="code">CDG</div><div class="city">Paris</div></div>
+      <div class="path" aria-hidden="true"><i></i>${o ? `<span class="ok">${S(I.plane, 24)}</span>` : '<span class="x">✕</span>'}<i></i></div>
+      <div style="text-align:right"><div class="code">FCO</div><div class="city">Rome</div></div></div>`;
+    const status = st.rebooked === 'refund' ? chip('Refunding','amber') : o ? chip('Rebooked','green') : chip('Cancelled','red');
+    const foot = o ? `<span>New <span class="mono">${o.dep} → ${o.arr}</span></span><span class="mono">${st.rebooked === 'milan' ? 'via MXP' : 'Sat'}</span>`
+      : `<span>Was <span class="mono">18:40 → 20:45</span></span><span>Gate <span class="mono">F32</span></span>`;
+    const board = `<section class="board" aria-label="Flight 1404 status"><div class="top"><span class="label">1404 · Updated 18:52</span>${status}</div>${route}<div class="foot">${foot}</div></section>`;
+    const cur = !st.rebooked ? 1 : !st.queue && !lookedAfter() ? 2 : 0;
+    const r = st.rebooked;
+    const s1t = r === 'morning' ? 'Rebooked on the 07:10' : r === 'milan' ? 'Booked via Milan at 21:40' : r === 'refund' ? 'Refund requested' : 'Rebook in the airline app';
+    const s1d = r === 'morning' ? 'Saturday, lands in Rome 09:15' : r === 'milan' ? 'Lands in Rome 00:55' : r === 'refund' ? 'Back on your card within 7 days' : 'Seats on the next flight go quickly';
+    const s2d = st.queue ? 'You’re in the queue. Tap to leave it.' : 'Transfer desk, near gate F32';
+    const n = (i, ok) => `<span class="n" aria-hidden="true">${ok ? S(I.check, 16, 3) : i}</span>`;
+    const tiles = `<div class="tiles">
+      <button type="button" class="tile" data-act="go" data-to="owed"><span class="label">May be owed</span><span class="big">€250</span><small>EU rules</small></button>
+      <button type="button" class="tile" data-act="go" data-to="care"><span class="label">Ask the desk</span><span class="ic" aria-hidden="true">${S(I.bed)}${S(I.food)}${S(I.car)}</span><small>${lookedAfter() ? 'All sorted' : careWords()}</small></button></div>
+      <button type="button" class="row" data-act="go" data-to="receipts"><span class="sq" aria-hidden="true">${S(I.receipt)}</span><span class="tx"><strong>Receipts</strong><small>${st.receipts.length} saved · <span class="mono">${eur(spent())}</span></small></span>${S(I.chev)}</button>`;
+    let nx;
+    if (!st.rebooked) nx = next('See options and rebook', 'go', 'options');
+    else if (!lookedAfter()) { const main = stillToAsk(['hotel', 'meals']).map(id => ASK[id]); nx = next(main.length ? 'Ask the desk for ' + listWords(main) : 'Ask the desk for what you need', 'go', 'care'); }
+    else if (!st.claimSent) nx = next('See what you’re owed', 'go', 'owed');
+    else nx = next('Claim sent. See your claim pack', 'go', 'claim');
+    return `<h1 class="sr" tabindex="-1">Your plan for flight 1404</h1>${board}<div class="scroll">${tracker()}
+      ${st.claimSent ? `<div class="done-banner">${S(I.check, 18, 2.5)}<span>Claim sent to the airline. We’ll remind you in 30 days if they haven’t replied.</span></div>` : ''}
+      <div style="display:flex;flex-direction:column;gap:8px"><span class="label">${st.rebooked ? 'Your plan' : 'Do this now'}</span>
+      <ol class="steps">
+        <li><button type="button" class="step ${cur === 1 ? 'now' : ''} ${r ? 'ok' : ''}" data-act="go" data-to="options">${n(1, r)}<span class="tx"><strong>${s1t}</strong><span class="d">${s1d}</span></span>${S(I.chev)}</button></li>
+        ${lookedAfter() ? `<li><button type="button" class="step ok" data-act="go" data-to="care">${n(2, true)}<span class="tx"><strong>Looked after by the desk</strong><span class="d">Everything you’re entitled to tonight</span></span>${S(I.chev)}</button></li>` : `<li><button type="button" class="step ${cur === 2 ? 'now' : ''} ${st.queue ? 'ok' : ''}" data-act="queue" aria-pressed="${st.queue}">${n(2, st.queue)}<span class="tx"><strong>${st.queue ? 'In the desk queue' : 'Join the desk queue as a backup'}</strong><span class="d">${s2d}</span></span></button></li>
+        <li><div class="step">${n(3, false)}<span class="tx"><strong>Call while you wait</strong><span class="d">Often faster than the desk</span></span><button type="button" class="call" data-act="call" aria-label="Call the airline">${S(I.phone, 20)}</button></div></li>`}
+      </ol></div>${tiles}</div>${nx}`;
+  },
+  options(){
+    const opt = (k) => {
+      const o = OPTIONS[k];
+      const times = o.dep ? `<span class="times"><span><span class="label" style="display:block">Leaves</span><strong>${o.dep}</strong></span><span class="ar" aria-hidden="true">→</span><span><span class="label" style="display:block">Arrives</span><strong>${o.arr}</strong></span></span>
+        <span class="meta"><span>${o.route}</span><b>${o.later} later</b></span>` : '';
+      return `<label class="opt"><input type="radio" name="opt" value="${k}" ${st.option === k ? 'checked' : ''} data-act="pick">
+        <span class="hd"><span class="radio" aria-hidden="true"></span><strong>${o.title}</strong>${o.chip ? chip(o.chip[0], o.chip[1]) : ''}</span>${times}<span class="note">${o.note}</span></label>`;
+    };
+    return `${bar('Your options')}${strip()}<div class="scroll" role="radiogroup" aria-label="Ways to get to Rome">
+      <span style="font-size:15px" class="muted">You were due in Rome at <span class="mono" style="color:var(--ink)">20:45</span></span>
+      ${opt('morning')}${opt('milan')}${opt('refund')}</div>${next(OPTIONS[st.option].next, 'rebook')}`;
+  },
+  care(){
+    const items = CARE.map(c => {
+      const need = careNeeded(c.id), got = st.care[c.id] === 'got';
+      let d = c.d;
+      if (c.id === 'hotel') d = !need ? (st.rebooked === 'milan' ? 'Not needed: you fly tonight' : 'Not included with a refund') : st.rebooked === 'morning' ? 'Your new flight leaves tomorrow' : 'If you’re stuck overnight';
+      if (c.id === 'transport' && !need) d = st.rebooked === 'milan' ? 'Not needed: no hotel tonight' : 'Not included with a refund';
+      const ctl = !need ? `<span class="toggle" aria-hidden="true">${chip('Not needed','outline')}</span>`
+        : `<button type="button" class="toggle" data-act="care" data-to="${c.id}" aria-pressed="${got}" aria-label="${c.t}: ${got ? 'got it' : 'still to ask'}">${got ? chip('Got it','green') : chip('Ask','outline')}</button>`;
+      return `<li><span class="sq" aria-hidden="true">${S(I[c.icon])}</span><span class="tx"><strong>${c.t}</strong><span class="d">${d}</span></span>${ctl}</li>`;
+    }).join('');
+    const nx = lookedAfter() ? next('See what you’re owed', 'go', 'owed') : next('Show this to the agent', 'go', 'agent');
+    return `${bar('Ask the desk for')}${strip()}<div class="scroll">${tracker()}<ul class="list">${items}</ul>
+      <span class="muted" style="font-size:15px;line-height:22px">Tap an item once the desk has given it to you. Paying for something yourself? Keep the receipt; it goes in your claim.</span></div>${nx}`;
+  },
+  agent(){
+    const AG = {meals:['food','Meals'], hotel:['bed','A hotel tonight'], transport:['car','Transport to the hotel'], calls:['msg','Two calls or emails']};
+    let ids = stillToAsk(['meals', 'hotel', 'transport', 'calls']); if (!ids.length) ids = ['meals', 'hotel', 'transport', 'calls'].filter(careNeeded);
+    return `<div class="agent"><h1 class="sr" tabindex="-1">Card to show the airline agent</h1>
+      <div class="top"><span>1404 · CDG → FCO</span>${chip('Cancelled','red')}</div>
+      <p>My flight was cancelled. Under EU Regulation 261/2004, I’m entitled to:</p>
+      <ul>${ids.map(id => `<li>${S(I[AG[id][0]], 30)}${AG[id][1]}</li>`).join('')}</ul>
+      <span class="thanks">Thank you for your help.</span>
+      <button type="button" class="done" data-act="agentDone">Done</button></div>`;
+  },
+  owed(){
+    return `${bar('What you’re owed')}<div class="scroll tight">
+      <section class="hero"><div style="display:flex;justify-content:space-between;align-items:center"><span class="label">You may be owed</span>${chip('EU 261','green')}</div><span class="amt">€250</span><small>Per person, for flights up to 1,500 km</small><p class="caveat"><strong>Not guaranteed.</strong> The airline can refuse if the cause was extraordinary, like severe weather. It has to prove it.</p></section>
+      <section class="card"><strong style="font-size:18px">Why</strong><ul class="checks">
+        <li>${S(I.check, 18, 2.5)}<span>Your flight left from the EU</span></li>
+        <li>${S(I.check, 18, 2.5)}<span>Cancelled less than 14 days before</span></li>
+        <li>${S(I.check, 18, 2.5)}<span>Paris to Rome is about 1,100 km</span></li></ul>
+        <a href="https://eur-lex.europa.eu/eli/reg/2004/261/oj" target="_blank" rel="noopener">Read the EU rule</a></section>
+      <button type="button" class="row" data-act="go" data-to="care"><span class="tx"><span class="label">Also, right now</span><strong>${lookedAfter() ? 'You’re looked after tonight' : careWords()}</strong></span>${S(I.chev)}</button>
+      </div>${next('Start your claim pack', 'go', 'claim')}`;
+  },
+  notowed(){
+    return `${bar('What you’re owed')}${strip('206', 'JFK → MXP')}<div class="scroll">
+      <section class="card" style="gap:2px"><span class="label">Dana · Cash compensation</span><strong style="font-size:26px;line-height:32px">None for this flight</strong></section>
+      <section class="card"><strong style="font-size:18px">Why</strong><ul style="margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px;font-size:16px;line-height:22px"><li>It left from the US on a US airline, so EU rules don’t apply</li><li>US rules don’t require cash for delays or cancellations</li></ul></section>
+      <section class="card"><strong style="font-size:18px">What you do get</strong><ul class="checks"><li>${S(I.check, 18, 2.5)}<span>A full refund within 7 business days if you don’t take the new flight</span></li></ul></section>
+      <section class="card warn-card"><strong>Before you buy another ticket</strong><span style="font-size:15px;line-height:22px">The airline doesn’t have to pay for another airline’s ticket. Ask for a partner flight first.</span></section>
+      </div>${next('Ask for a partner flight', 'partner')}`;
+  },
+  receipts(){
+    const rows = st.receipts.length ? st.receipts.map(r => `<li><span class="sq" aria-hidden="true">${S(I[CAT[r.cat].icon])}</span><span class="tx"><strong>${esc(r.t)}</strong><span class="d">Photo · ${esc(r.d)}</span></span><strong class="mono">${eur(r.amt)}</strong><button type="button" class="rm" data-act="rmReceipt" data-to="${r.id}" aria-label="Remove ${esc(r.t)}">${S(I.x, 18)}</button></li>`).join('')
+      : `<li class="empty">No receipts yet. Add one for anything you pay for yourself.</li>`;
+    return `${bar('Receipts')}${strip()}<div class="scroll">
+      <section class="card" style="gap:2px"><span class="label">Spent so far</span><strong class="mono" style="font-size:44px;line-height:52px">${eur(spent())}</strong><span class="muted" style="font-size:15px;line-height:22px">Added to your claim pack automatically</span></section>
+      <ul class="list">${rows}</ul></div>${next('Add a receipt', 'addReceipt')}`;
+  },
+  claim(){
+    const exp = spent(), n = st.receipts.length;
+    return `${bar('Your claim pack')}<div class="scroll tight">${tracker()}
+      <section class="stub" aria-label="Claim pack"><div class="hd"><div style="display:flex;justify-content:space-between;align-items:center"><span class="label">Claim pack</span><span class="mono" style="font-size:14px;color:var(--on-sign-m)">1404</span></div>
+        <div class="mono" style="display:flex;align-items:center;gap:12px;font-size:30px;line-height:36px;font-weight:700"><span>CDG</span><span aria-hidden="true" style="color:var(--on-sign-m);display:flex">${S(I.plane, 22)}</span><span>FCO</span></div></div>
+        <div class="perf" aria-hidden="true"></div>
+        <div class="bd"><div class="kv"><span>Compensation</span><span class="mono">€250.00</span></div>
+        <div class="kv"><span>Expenses <button type="button" class="lnk" data-act="go" data-to="receipts">Edit</button></span><span class="mono">${eur(exp)}</span></div>
+        <div class="total"><strong>Total to request</strong><span class="mono">${eur(250 + exp)}</span></div>
+        <span class="muted small">Attached: boarding pass${n ? `, ${n} receipt${n === 1 ? '' : 's'}` : ''}</span><span class="saved">${S(I.check, 16, 2.75)}Saved in Onward. Nothing to download.</span></div></section>
+      <section class="card"><strong style="font-size:18px">How to send it</strong><ol class="howto"><li class="${st.copied ? 'ok' : ''}"><span class="k" aria-hidden="true">${st.copied ? S(I.check, 14, 3) : 1}</span><span class="tx">Copy your details</span><button type="button" class="btn sm" data-act="copy">${st.copied ? 'Copied' : 'Copy'}</button></li><li class="${st.claimSent ? 'ok' : ''}"><span class="k" aria-hidden="true">${st.claimSent ? S(I.check, 14, 3) : 2}</span><span class="tx">Paste them into the airline’s claim form</span></li><li class="${st.claimSent ? 'ok' : ''}"><span class="k" aria-hidden="true">${st.claimSent ? S(I.check, 14, 3) : 3}</span><span class="tx">Send it. Onward never takes a fee.</span></li></ol></section>
+      <label class="card switch"><span><strong style="display:block">Remind me in 30 days</strong><span class="muted small">If the airline hasn’t replied</span></span><input type="checkbox" data-act="remind" ${st.remind ? 'checked' : ''}></label>
+      </div>${st.claimSent ? next('Back to your trip', 'go', 'plan') : next('Open the airline’s claim form', 'send')}`;
+  }
+};
+
+function render(focus){
+  $screen.innerHTML = screens[st.screen]();
+  const sc = $screen.querySelector('.scroll'); if (sc) sc.scrollTop = 0;
+  if (focus) { const h = $screen.querySelector('h1'); if (h) h.focus({preventScroll:true}); }
+}
+function go(to){ if (to === st.screen) return; st.stack.push(st.screen); st.screen = to; closeSheet(); $toast.hidden = true; render(true); }
+function back(){ st.screen = st.stack.pop() || 'plan'; render(true); }
+let tTimer;
+function toast(msg){ $toast.textContent = msg; $toast.hidden = false; clearTimeout(tTimer); tTimer = setTimeout(() => { $toast.hidden = true; }, 3200); }
+
+let lastFocus = null;
+function openSheet(html){
+  lastFocus = document.activeElement;
+  $sheet.innerHTML = `<div class="sheet" role="dialog" aria-modal="true" aria-labelledby="sh-h"><span class="grab" aria-hidden="true"></span>${html}</div>`;
+  $sheet.hidden = false;
+  const f = $sheet.querySelector('input, button'); if (f) f.focus();
+}
+function closeSheet(){ if ($sheet.hidden) return; $sheet.hidden = true; $sheet.innerHTML = ''; if (lastFocus && document.body.contains(lastFocus)) lastFocus.focus(); }
+
+function rebookSheet(){
+  const k = st.option;
+  if (k === 'morning') openSheet(`<h2 id="sh-h">Rebook in the airline app</h2><p class="muted">Onward can’t book seats itself. In the real app, this opens your airline’s app on the rebooking page for the 07:10.</p>
+    <div class="acts"><button type="button" class="btn primary block" data-act="confirmRebook">I’ve rebooked on the 07:10</button><button type="button" class="btn block" data-act="close">Not yet</button></div>`);
+  else if (k === 'milan') openSheet(`<h2 id="sh-h">Ask the desk to book it</h2><p class="muted">Partner flights are booked by the airline’s desk. Show them this:</p>
+    <div class="quote">Please rebook me on the 21:40 to Rome via Milan, at no extra cost.</div>
+    <div class="acts"><button type="button" class="btn primary block" data-act="confirmRebook">The desk booked it</button><button type="button" class="btn block" data-act="close">Not yet</button></div>`);
+  else openSheet(`<h2 id="sh-h">Request a refund</h2><p class="muted">In the real app, this opens your airline’s refund page. The money goes back to your card within 7 days.</p>
+    <div class="acts"><button type="button" class="btn primary block" data-act="confirmRebook">I’ve requested a refund</button><button type="button" class="btn block" data-act="close">Not yet</button></div>`);
+}
+let cat = 'meal';
+function receiptSheet(){
+  cat = 'meal';
+  openSheet(`<h2 id="sh-h">Add a receipt</h2>
+    <form id="rf" novalidate style="display:flex;flex-direction:column;gap:12px">
+    <div class="field"><span id="cat-l">Type</span><div class="seg" role="group" aria-labelledby="cat-l">${Object.entries(CAT).map(([k, v]) => `<button type="button" data-act="cat" data-to="${k}" aria-pressed="${k === cat}">${v.name}</button>`).join('')}</div></div>
+    <label class="field"><span>What was it?</span><input id="r-t" autocomplete="off" placeholder="Dinner at the airport" maxlength="40"></label>
+    <label class="field"><span>Amount in €</span><input id="r-a" inputmode="decimal" autocomplete="off" placeholder="18.00"></label>
+    <span class="err" id="r-e" role="alert"></span>
+    <span class="muted small">Photo of the receipt: attached (sample)</span>
+    <div class="acts"><button type="submit" class="btn primary block">Add to my claim</button><button type="button" class="btn block" data-act="close">Cancel</button></div></form>`);
+  document.getElementById('rf').addEventListener('submit', e => {
+    e.preventDefault();
+    const t = document.getElementById('r-t'), a = document.getElementById('r-a'), err = document.getElementById('r-e');
+    const raw = String(a.value).trim().replace(/^€\s*/, '').replace(/\s*€$/, '');
+    const amt = /^\d{1,4}([.,]\d{1,2})?$/.test(raw) ? parseFloat(raw.replace(',', '.')) : NaN;
+    t.removeAttribute('aria-invalid'); a.removeAttribute('aria-invalid');
+    if (!t.value.trim()) { t.setAttribute('aria-invalid', 'true'); err.textContent = 'Say what the receipt is for.'; t.focus(); return; }
+    if (!(amt > 0) || amt > 5000) { a.setAttribute('aria-invalid', 'true'); err.textContent = 'Enter an amount like 18.40, up to €5,000.'; a.focus(); return; }
+    st.receipts.push({id:st.nextId++, cat, t:t.value.trim(), d:'Just now', amt:Math.round(amt * 100) / 100});
+    closeSheet(); render(true); toast(`${eur(Math.round(amt * 100) / 100)} added to your claim`);
+  });
+}
+function claimText(){
+  const exp = spent();
+  return `Flight 1404, Paris (CDG) to Rome (FCO), scheduled 18:40 on Friday, was cancelled at the gate.\nUnder EU Regulation 261/2004 I am requesting €250.00 compensation and ${eur(exp)} in expenses${st.receipts.length ? ` (${st.receipts.length} receipt${st.receipts.length === 1 ? '' : 's'} attached)` : ''}.\nTotal: ${eur(250 + exp)}.\nName: Maya`;
+}
+async function copy(){
+  let ok = true;
+  try { await navigator.clipboard.writeText(claimText()); } catch (e) { ok = false; }
+  if (ok) st.copied = true;
+  if (st.screen === 'claim') { render(false); const c = st.claimSent ? $screen.querySelector('h1') : $screen.querySelector('[data-act="copy"]'); if (c) c.focus({preventScroll:true}); }
+  toast(ok ? (st.claimSent ? 'Details copied. In the real app, the airline’s form opens next.' : 'Claim details copied') : 'Copy isn’t available here. In the real app, the details are copied for you.');
+}
+
+document.addEventListener('click', e => {
+  const el = e.target.closest('[data-act]');
+  if (!el) { if (e.target === $sheet) closeSheet(); return; }
+  const a = el.dataset.act, to = el.dataset.to;
+  if (a === 'pick' || a === 'remind') return;
+  switch (a) {
+    case 'go': go(to); break;
+    case 'back': back(); break;
+    case 'jump': st.stack = to === 'lock' ? [] : ['plan']; st.screen = to; closeSheet(); render(false); break;
+    case 'queue': st.queue = !st.queue; render(false); $screen.querySelector('[data-act="queue"]').focus(); toast(st.queue ? 'You’re in the desk queue. Keep going in the app while you wait.' : 'You left the desk queue'); break;
+    case 'call': toast('Sample: this would call the airline’s help line.'); break;
+    case 'rebook': rebookSheet(); break;
+    case 'confirmRebook': st.rebooked = st.option; closeSheet(); st.stack = []; st.screen = 'plan'; render(true); toast(st.option === 'refund' ? 'Refund requested' : 'Rebooked. Next, ask the desk for what they must provide tonight.'); break;
+    case 'close': closeSheet(); break;
+    case 'care': st.care[to] = st.care[to] === 'got' ? 'ask' : 'got'; render(false); { const b = $screen.querySelector(`[data-act="care"][data-to="${to}"]`); if (b) b.focus(); } break;
+    case 'agentDone': openSheet(`<h2 id="sh-h">Did the desk sort it out?</h2><p class="muted">Mark what they gave you, so your plan stays up to date.</p>
+      <div class="acts"><button type="button" class="btn primary block" data-act="allGot">Yes, I got everything</button><button type="button" class="btn block" data-act="notYet">Not yet</button></div>`); break;
+    case 'allGot': CARE.forEach(c => { if (careNeeded(c.id)) st.care[c.id] = 'got'; }); closeSheet(); st.screen = 'care'; st.stack = st.stack.filter(s => s !== 'care' && s !== 'agent'); render(true); toast('Looked after. Next, see what you’re owed.'); break;
+    case 'notYet': closeSheet(); st.screen = 'care'; st.stack = st.stack.filter(s => s !== 'care' && s !== 'agent'); render(true); break;
+    case 'addReceipt': receiptSheet(); break;
+    case 'cat': cat = to; $sheet.querySelectorAll('[data-act="cat"]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.to === to))); break;
+    case 'rmReceipt': { const r = st.receipts.find(x => String(x.id) === to); st.receipts = st.receipts.filter(x => String(x.id) !== to); render(true); if (r) toast(`Removed ${r.t}`); } break;
+    case 'copy': copy(); break;
+    case 'send': openSheet(`<h2 id="sh-h">Send your claim</h2><p class="muted">In the real app, your details are copied and the airline’s own claim form opens. You paste them in and send it yourself.</p>
+      <div class="acts"><button type="button" class="btn primary block" data-act="sent">Copy details and open the form</button><button type="button" class="btn block" data-act="close">Not now</button></div>`); break;
+    case 'sent': st.claimSent = true; closeSheet(); render(false); copy(); break;
+    case 'partner': openSheet(`<h2 id="sh-h">Ask for a partner flight</h2><p class="muted">Show this at the desk or read it out on the phone:</p>
+      <div class="quote">Can you rebook me on a partner airline to Milan today, at no extra cost?</div>
+      <div class="acts"><button type="button" class="btn primary block" data-act="close">Done</button></div>`); break;
+    case 'theme': { const dark = !isDark(); document.documentElement.dataset.theme = dark ? 'dark' : 'light'; el.textContent = dark ? 'Light mode' : 'Dark mode'; } break;
+    case 'reset': st = fresh(); closeSheet(); render(true); toast('Demo reset'); break;
+  }
+});
+document.addEventListener('change', e => {
+  if (e.target.dataset.act === 'scene' && e.target.value) { const to = e.target.value; e.target.value = ''; st.stack = to === 'lock' ? [] : ['plan']; st.screen = to; closeSheet(); $toast.hidden = true; render(true); return; }
+  if (e.target.dataset.act === 'pick') { st.option = e.target.value; const s = $screen.querySelector('.next strong'); if (s) s.textContent = OPTIONS[st.option].next; }
+  if (e.target.dataset.act === 'remind') { st.remind = e.target.checked; toast(st.remind ? 'Reminder on' : 'Reminder off'); }
+});
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && !$sheet.hidden) { closeSheet(); return; }
+  if (e.key === 'Tab' && !$sheet.hidden) {
+    const f = [...$sheet.querySelectorAll('button, input, a[href]')]; if (!f.length) return;
+    if (e.shiftKey && document.activeElement === f[0]) { e.preventDefault(); f.at(-1).focus(); }
+    else if (!e.shiftKey && document.activeElement === f.at(-1)) { e.preventDefault(); f[0].focus(); }
+  }
+});
+function isDark(){ const t = document.documentElement.dataset.theme; return t ? t === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches; }
+document.querySelector('[data-act="theme"]').textContent = isDark() ? 'Light mode' : 'Dark mode';
+render(false);
+})();
+</script>
+<script>(function(){var h=location.hash&&document.getElementById(location.hash.slice(1));try{(h||document.body).scrollIntoView({block:"start"});}catch(e){}})();</script>
+</body>
+</html>

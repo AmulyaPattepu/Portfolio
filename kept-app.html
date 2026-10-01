@@ -1,0 +1,579 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Kept · Prototype by Amulya</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ground:#faf8f5;--surface:#ffffff;--sunk:#f2efea;--line:#e3ded6;--line-strong:#8f887d;
+  --ink:#1e1d1a;--muted:#625c52;
+  --teal:#0f5f5c;--on-teal:#ffffff;--teal-tint:#e3f0ee;--teal-soft:#cfe6e2;--avatar-ink:#0f5f5c;
+  --violet:#6a4bd8;--violet-tint:#f1edfd;
+  --amber:#7a4e00;--amber-tint:#fdf1d6;--amber-line:#c98a12;
+  --green:#1c6b3a;--green-tint:#e2f3e7;--red:#a3241f;--red-tint:#fbe6e3;
+  --shadow:0 4px 16px rgba(30,29,26,.12);
+  --font:'Instrument Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --ground:#161614;--surface:#1f1e1b;--sunk:#12110f;--line:#34322d;--line-strong:#8a8478;
+  --ink:#f2efe9;--muted:#aba498;
+  --teal:#4fb3ac;--on-teal:#12110f;--teal-tint:#183331;--teal-soft:#2c5f5b;--avatar-ink:#f2efe9;
+  --violet:#a897f2;--violet-tint:#241f3a;
+  --amber:#f0c46a;--amber-tint:#3a2c10;--amber-line:#b9861e;
+  --green:#7fd39b;--green-tint:#16301f;--red:#f49a92;--red-tint:#3a1a17;
+  --shadow:0 4px 16px rgba(0,0,0,.5);color-scheme:dark}}
+:root[data-theme="dark"]{
+  --ground:#161614;--surface:#1f1e1b;--sunk:#12110f;--line:#34322d;--line-strong:#8a8478;
+  --ink:#f2efe9;--muted:#aba498;
+  --teal:#4fb3ac;--on-teal:#12110f;--teal-tint:#183331;--teal-soft:#2c5f5b;--avatar-ink:#f2efe9;
+  --violet:#a897f2;--violet-tint:#241f3a;
+  --amber:#f0c46a;--amber-tint:#3a2c10;--amber-line:#b9861e;
+  --green:#7fd39b;--green-tint:#16301f;--red:#f49a92;--red-tint:#3a1a17;
+  --shadow:0 4px 16px rgba(0,0,0,.5);color-scheme:dark}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--ground);color:var(--ink);font:14px/22px var(--font);font-variant-numeric:tabular-nums;-webkit-font-smoothing:antialiased}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer}
+button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
+a{color:var(--teal)}
+h1,h2,h3{margin:0;text-wrap:balance}
+
+.demo{display:flex;flex-wrap:wrap;align-items:center;gap:8px 16px;padding:8px 16px;padding-top:calc(8px + env(safe-area-inset-top,0px));background:var(--ink);color:var(--ground);font-size:13px}
+.demo a{color:var(--ground);font-weight:600;display:inline-flex;align-items:center;min-height:40px}
+.demo button{background:transparent;border:1px solid currentColor;color:var(--ground);border-radius:999px;padding:0 14px;font-size:13px;min-height:36px}
+.demo .sp{flex:1}
+
+.app{display:grid;grid-template-columns:220px minmax(0,1fr);min-height:calc(100vh - 56px);min-height:calc(100dvh - 56px)}
+.nav{border-right:1px solid var(--line);padding:24px 16px;display:flex;flex-direction:column;gap:4px}
+.brand{display:flex;align-items:center;gap:10px;padding:0 8px 20px;font-size:22px;font-weight:600;letter-spacing:-.02em}
+.nav button{display:flex;align-items:center;gap:10px;width:100%;padding:10px 12px;border-radius:8px;border:none;background:transparent;text-align:left;min-height:44px}
+.nav button[aria-current="page"]{background:var(--teal-tint);color:var(--teal);font-weight:600}
+.nav button:hover:not([aria-current="page"]){background:var(--sunk)}
+.nav .count{margin-left:auto;background:var(--teal);color:var(--on-teal);font-size:12px;line-height:16px;padding:2px 8px;border-radius:999px;font-weight:600}
+.nav .grow{flex:1}
+.profile{display:flex;align-items:center;gap:10px;padding:12px 8px 0;border-top:1px solid var(--line)}
+.avatar{flex:none;width:36px;height:36px;border-radius:999px;background:var(--sunk);color:var(--muted);display:flex;align-items:center;justify-content:center;font-weight:600}
+.avatar.on{background:var(--teal-soft);color:var(--avatar-ink)}
+.small{font-size:12px;line-height:18px;color:var(--muted)}
+
+.main{display:flex;flex-direction:column;min-width:0;padding:20px 24px 24px;gap:16px}
+.head{display:flex;flex-wrap:wrap;align-items:center;gap:12px}
+.head h1{font-size:20px;line-height:28px;font-weight:600}
+.head .grow{flex:1}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:0 16px;border-radius:8px;border:1px solid transparent;font-weight:600;background:transparent}
+.btn.primary{background:var(--teal);color:var(--on-teal)}
+.btn.secondary{background:var(--surface);border-color:var(--line-strong);font-weight:500}
+.btn.quiet{font-weight:500}
+.btn.sm{min-height:36px;padding:0 12px;font-size:13px}
+.btn[disabled]{background:var(--sunk);color:var(--muted);border-color:var(--line);cursor:not-allowed}
+.sale{display:flex;flex-wrap:wrap;align-items:center;gap:4px 12px;padding:8px 16px;background:var(--amber-tint);border:1px solid var(--amber-line);border-radius:8px;color:var(--amber);font-weight:600}
+.sale span{margin-left:auto;font-weight:400;color:var(--ink)}
+.chip{display:inline-flex;align-items:center;font-size:12px;line-height:16px;font-weight:600;letter-spacing:.02em;padding:3px 10px;border-radius:999px;white-space:nowrap}
+.chip.paid{background:var(--green-tint);color:var(--green)}
+.chip.unpaid{background:var(--red-tint);color:var(--red)}
+.chip.check{background:var(--amber-tint);color:var(--amber)}
+.chip.ai{background:var(--violet-tint);color:var(--violet)}
+.chip.kept{background:var(--teal-tint);color:var(--teal)}
+.chip.neutral{background:var(--sunk);color:var(--muted)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+
+.inbox{display:grid;grid-template-columns:300px minmax(0,1fr) 380px;background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow:hidden;flex:1;min-height:600px}
+.list{border-right:1px solid var(--line);display:flex;flex-direction:column;min-width:0}
+.convo{display:flex;gap:12px;padding:14px 16px;border:none;border-bottom:1px solid var(--line);background:transparent;text-align:left;width:100%}
+.convo[aria-current="true"]{background:var(--teal-tint)}
+.convo:hover:not([aria-current="true"]){background:var(--sunk)}
+.convo .body{display:flex;flex-direction:column;gap:2px;min-width:0;flex:1}
+.convo .row{display:flex;justify-content:space-between;gap:8px}
+.convo .prev{font-size:13px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chat{display:flex;flex-direction:column;min-width:0;background:var(--ground)}
+.chat .who{display:flex;align-items:center;gap:12px;padding:14px 20px;background:var(--surface);border-bottom:1px solid var(--line)}
+.msgs{flex:1;padding:20px;display:flex;flex-direction:column;gap:12px;overflow-y:auto;max-height:560px}
+.msg{max-width:78%;padding:10px 14px;border-radius:14px 14px 14px 4px;background:var(--surface);border:1px solid var(--line);align-self:flex-start;overflow-wrap:anywhere}
+.msg.me{align-self:flex-end;border-radius:14px 14px 4px 14px;background:var(--teal-tint);border-color:transparent}
+.msg.sys{align-self:center;background:transparent;border:1px dashed var(--line-strong);border-radius:999px;font-size:12px;color:var(--muted);padding:4px 12px}
+.msg time{display:block;font-size:11px;line-height:16px;color:var(--muted);margin-top:4px}
+.hl-ai{background:var(--violet-tint);border-bottom:2px solid var(--violet);padding:0 2px}
+.hl-check{background:var(--amber-tint);border-bottom:2px solid var(--amber-line);padding:0 2px}
+.typing{align-self:flex-start;font-size:12px;color:var(--muted)}
+.legend{display:flex;flex-wrap:wrap;justify-content:center;gap:16px;font-size:12px;color:var(--muted);padding:0 20px 8px}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+.compose{display:flex;flex-wrap:wrap;gap:8px;align-items:flex-end;padding:14px 20px;background:var(--surface);border-top:1px solid var(--line)}
+.compose .field{flex:1 1 200px;display:flex;flex-direction:column;gap:4px;min-width:0}
+.compose label{font-size:12px;color:var(--muted)}
+.compose input{padding:10px 12px;border:1px solid var(--line-strong);border-radius:8px;background:var(--surface);min-height:44px;width:100%}
+.side{border-left:1px solid var(--line);padding:16px;background:var(--surface);min-width:0}
+.card{border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:4px;transition:background .25s,border-color .25s}
+.card.draft{border:1.5px dashed var(--violet)}
+.card.kept{border:1.5px solid var(--teal);background:var(--teal-tint)}
+.card .top{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.card h2{font-size:16px;line-height:24px;font-weight:600}
+.f{display:grid;grid-template-columns:84px minmax(0,1fr);gap:8px;padding:8px 0;border-bottom:1px solid var(--line)}
+.f:last-of-type{border-bottom:none}
+.f .k{font-size:12px;color:var(--muted)}
+.f.check{background:var(--amber-tint);border:1px solid var(--amber-line);border-radius:6px;padding:10px;margin:4px -10px}
+.f.check .k{color:var(--amber);font-weight:600}
+.f.bad{background:var(--red-tint);border:1px solid var(--red);border-radius:6px;padding:10px;margin:4px -10px}
+.f.bad .k{color:var(--red);font-weight:600}
+.f .v{display:flex;flex-direction:column;gap:6px;align-items:flex-start;min-width:0}
+.hint{font-size:12px;line-height:18px;color:var(--amber)}
+.hint.bad{color:var(--red)}
+.sizes{display:flex;gap:6px}
+.sizes button{min-width:44px;min-height:36px;border-radius:6px;border:1px solid var(--line-strong);background:var(--surface);font-weight:500}
+.sizes button[aria-pressed="true"]{border:1.5px solid var(--ink);font-weight:600}
+.foot{display:flex;flex-direction:column;gap:8px;padding-top:12px;margin-top:8px;border-top:1px solid var(--line)}
+.foot .row{display:flex;flex-wrap:wrap;gap:8px}
+.foot .row .btn.primary{flex:1}
+.confirm{background:var(--sunk);border-radius:8px;padding:12px;display:flex;flex-direction:column;gap:8px}
+.tip{display:flex;flex-wrap:wrap;align-items:center;gap:8px 16px;padding:10px 16px;border-radius:8px;background:var(--surface);border:1px solid var(--line)}
+.tip ol{display:flex;flex-wrap:wrap;gap:4px 20px;margin:0;padding:0;list-style:none;counter-reset:t}
+.tip li{counter-increment:t}
+.tip li::before{content:counter(t);display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:999px;background:var(--teal);color:var(--on-teal);font-size:12px;font-weight:600;margin-right:6px}
+.tip .x{margin-left:auto}
+.addr{font-size:15px;line-height:22px;font-weight:600}
+.pay{display:flex;flex-direction:column;align-items:flex-start;gap:2px;padding:10px 12px;border-radius:8px;font-weight:600;margin:8px 0 4px}
+.pay.no{background:var(--red-tint);color:var(--red);border:1px solid var(--red)}
+.pay.yes{background:var(--green-tint);color:var(--green);border:1px solid var(--green)}
+.pay small{display:block;font-weight:400;font-size:12px;line-height:18px;color:var(--ink)}
+.pay .big{font-size:18px;line-height:24px}
+.steps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;margin:4px 0 8px;padding:0;list-style:none}
+.steps li{display:flex;flex-direction:column;gap:6px;font-size:12px;line-height:16px;color:var(--muted)}
+.steps li::before{content:"";height:6px;border-radius:999px;background:var(--line)}
+.steps li.done{color:var(--ink)}
+.steps li.done::before{background:var(--teal)}
+.steps li.now{color:var(--ink);font-weight:600}
+.steps li.now::before{background:var(--amber-line)}
+.empty{border:1.5px dashed var(--line-strong);border-radius:8px;padding:20px 16px;text-align:center;color:var(--muted);font-size:13px}
+
+.board{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;align-items:start}
+.col{background:var(--sunk);border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.col h2{font-size:14px;font-weight:600;display:flex;align-items:center;gap:8px}
+.col .ch{display:flex;justify-content:space-between;align-items:center}
+.dot{width:8px;height:8px;border-radius:999px;display:inline-block}
+.oc{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:12px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.oc.new{border:1.5px solid var(--teal);animation:pop .6s ease}
+.oc .meta{display:flex;justify-content:space-between;gap:8px;font-size:12px;line-height:18px;color:var(--muted)}
+.oc .note{font-size:12px;line-height:18px;color:var(--muted);background:var(--sunk);padding:4px 8px;border-radius:6px}
+.oc.done{background:var(--ground);color:var(--muted)}
+@keyframes pop{from{transform:scale(.97);opacity:.4}to{transform:none;opacity:1}}
+
+.stock{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:20px;align-items:start}
+.tablewrap{background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:560px}
+th{text-align:left;font-size:12px;color:var(--muted);font-weight:600;padding:12px 16px;background:var(--ground);border-bottom:1px solid var(--line)}
+td{padding:14px 16px;border-bottom:1px solid var(--line)}
+tr:last-child td{border-bottom:none}
+.num{text-align:right}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:20px;display:flex;flex-direction:column;gap:16px}
+.bar{height:8px;border-radius:999px;background:var(--sunk);overflow:hidden}
+.bar i{display:block;height:8px;border-radius:999px}
+.seg{display:inline-flex;padding:3px;background:var(--sunk);border-radius:999px}
+.seg button{border:none;border-radius:999px;padding:6px 16px;background:transparent;color:var(--muted);font-size:13px;min-height:32px}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);font-weight:600}
+
+.phone-wrap{display:flex;flex-wrap:wrap;gap:24px;align-items:flex-start}
+.phone{width:min(390px,100%);border:1px solid var(--line);border-radius:28px;background:var(--ground);padding:24px 16px;display:flex;flex-direction:column;gap:12px;box-shadow:var(--shadow)}
+.phone h2{font-size:26px;line-height:32px;font-weight:600}
+.pc{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:10px;font-size:16px;line-height:24px}
+.pc .t{font-size:18px;font-weight:600}
+.pc .btn{min-height:52px;border-radius:10px;font-size:16px}
+.ok{color:var(--green);font-weight:600;font-size:14px}
+.wait{font-size:14px;line-height:20px;padding:8px 12px;border-radius:8px;background:var(--amber-tint);border:1px solid var(--amber-line);color:var(--amber)}
+.explain{flex:1 1 260px;max-width:420px;display:flex;flex-direction:column;gap:8px;color:var(--muted)}
+.explain h2{color:var(--ink);font-size:16px}
+
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--ground);padding:10px 16px;border-radius:8px;box-shadow:var(--shadow);font-weight:500;max-width:calc(100% - 32px);z-index:5}
+
+@media (max-width:1180px){
+  .inbox{grid-template-columns:260px minmax(0,1fr)}
+  .side{grid-column:1/-1;border-left:none;border-top:1px solid var(--line)}
+  .board{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .stock{grid-template-columns:minmax(0,1fr)}
+}
+@media (max-width:860px){
+  .app{grid-template-columns:minmax(0,1fr)}
+  .nav{flex-direction:row;flex-wrap:wrap;align-items:center;border-right:none;border-bottom:1px solid var(--line);padding:12px 16px;gap:4px}
+  .brand{padding:0 8px 0 0}
+  .nav button{width:auto}
+  .nav .grow,.nav .profile{display:none}
+  .main{padding:16px}
+  .inbox{grid-template-columns:minmax(0,1fr)}
+  .list{border-right:none;border-bottom:1px solid var(--line)}
+  .board{grid-template-columns:minmax(0,1fr)}
+  .msg{max-width:90%}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="demo" role="note">
+  <strong>Interactive prototype</strong><span>Sample data. Try approving Riya's order, then mark it paid and pack it.</span>
+  <span class="sp"></span>
+  <button type="button" data-act="reset">Reset demo</button>
+  <a href="kept.html">Back to case study</a>
+</div>
+<div id="app"></div>
+<div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+
+<script>
+const ICON = {
+  inbox:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 12h-6l-2 3h-4l-2-3H2"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg>',
+  orders:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 3h6v3H9zM9 11h6M9 15h4"/></svg>',
+  stock:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 8 12 3 3 8v8l9 5 9-5V8z"/><path d="M3 8l9 5 9-5M12 13v8"/></svg>',
+  helper:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/></svg>',
+  logo:'<svg width="26" height="26" viewBox="0 0 26 26" aria-hidden="true"><rect x="1" y="1" width="24" height="24" rx="6" fill="var(--teal)"/><rect x="6" y="8" width="14" height="4" rx="2" fill="var(--teal-soft)"/><rect x="6" y="15" width="9" height="4" rx="2" fill="var(--teal-soft)"/></svg>'
+};
+const CH = {wa:'WhatsApp', ig:'Instagram', fb:'Facebook'};
+
+function fresh(){
+  return {
+    view:'inbox', sale:true, tip:true, sel:'riya', confirmPay:null, newOrder:null, typing:null, nextId:1048, compose:{}, stockMode:'units',
+    products:{
+      kS:{name:'Navy linen kurti',v:'S',stock:2}, kM:{name:'Navy linen kurti',v:'M',stock:3}, kL:{name:'Navy linen kurti',v:'L',stock:1},
+      dS:{name:'Mustard wrap dress',v:'S',stock:4}, dM:{name:'Mustard wrap dress',v:'M',stock:2},
+      fl:{name:'Floral cotton set',v:'Free size',stock:6}, hp:{name:'Silver hoop earrings',v:'One size',stock:0}
+    },
+    orders:[
+      {id:1047, who:'@asha.styles', ch:'ig', p:'dM', qty:1, status:'unpaid', addr:true, conv:'asha', age:'25 min'},
+      {id:1046, who:'Neha K.', ch:'wa', p:'dM', qty:1, status:'paid', addr:true, note:'Gift wrap, no price tag', conv:'neha'},
+      {id:1045, who:'Farah S.', ch:'fb', p:'fl', qty:2, status:'paid', addr:false, conv:'farah'},
+      {id:1044, who:'@meera.j', ch:'ig', p:'fl', qty:1, status:'unpaid', addr:true, conv:'meera', age:'1 h'},
+      {id:1043, who:'Leela T.', ch:'wa', p:'kS', qty:1, status:'paid', addr:true},
+      {id:1042, who:'Tanvi R.', ch:'wa', p:'kL', qty:1, status:'unpaid', addr:true, age:'2 h'},
+      {id:1041, who:'Tara P.', ch:'wa', p:'dS', qty:1, status:'packed', addr:true},
+      {id:1040, who:'Sam R.', ch:'ig', p:'hp', qty:1, status:'packed', addr:true},
+      {id:1036, who:'Kiran D.', ch:'wa', p:'dS', qty:1, status:'delivered', addr:true},
+      {id:1035, who:'@nila.co', ch:'ig', p:'fl', qty:1, status:'delivered', addr:true}
+    ],
+    convos:[
+      {id:'riya', who:'Riya M.', ch:'wa', merged:true, time:'2 min', msgs:[
+        {f:'b', t:['Hi! Is the ',{h:'ai',t:'navy linen kurti'},' from today’s post still available?'], at:'10:02'},
+        {f:'s', t:['Yes it is! Which size do you need?'], at:'10:03'},
+        {f:'b', t:[{h:'check',t:'M or L?'},' I’m usually M'], at:'10:04'},
+        {f:'b', t:['Send it to ',{h:'check',t:'12 Lake View Road, near the park'}], at:'10:05'}],
+        draft:{product:'Navy linen kurti', pre:'k', size:'M', sizeCheck:true, sizeHint:'Riya wrote “M or L?”', qty:1, addr:'12 Lake View Road, near the park', addrCheck:true, kept:false, confirm:false}},
+      {id:'kavya', who:'Kavya S.', ch:'ig', time:'3 min', msgs:[
+        {f:'b', t:['Do you have the ',{h:'ai',t:'navy kurti in L'},'? Ship to ',{h:'ai',t:'8 Hill Street, Flat 2A'}], at:'10:06'}],
+        draft:{product:'Navy linen kurti', pre:'k', size:'L', sizeCheck:false, qty:1, addr:'8 Hill Street, Flat 2A', addrCheck:false, kept:false, confirm:false}},
+      {id:'asha', who:'@asha.styles', ch:'ig', time:'25 min', order:1047, msgs:[
+        {f:'b', t:['Is the mustard one still there? I’ll take M'], at:'09:41'},
+        {f:'s', t:['Yes! Reserved for you. Payment details sent.'], at:'09:42'}]},
+      {id:'neha', who:'Neha K.', ch:'wa', time:'40 min', order:1046, msgs:[
+        {f:'b', t:['Paid! Sending the screenshot'], at:'09:20'},
+        {f:'s', t:['Got it in my account, thank you!'], at:'09:24'}]},
+      {id:'farah', who:'Farah S.', ch:'fb', time:'1 h', order:1045, msgs:[
+        {f:'b', t:['Paid for 2 floral sets. Can you ship this week?'], at:'09:02'}]},
+      {id:'meera', who:'@meera.j', ch:'ig', time:'1 h', order:1044, msgs:[
+        {f:'b', t:['Price for the floral set?'], at:'08:55'},
+        {f:'s', t:['It’s $24. Shall I keep one for you?'], at:'08:57'},
+        {f:'b', t:['Yes please'], at:'08:58'}]}
+    ]
+  };
+}
+let S = fresh();
+let toastTimer = null;
+
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const held = p => S.orders.filter(o => o.p === p && o.status === 'unpaid').reduce((a,o) => a + o.qty, 0);
+const avail = p => S.products[p].stock - held(p);
+const order = id => S.orders.find(o => o.id === id);
+const convo = id => S.convos.find(c => c.id === id);
+const itemName = o => S.products[o.p].name + (S.products[o.p].v.length <= 2 ? ' · ' + S.products[o.p].v : '');
+const drafts = () => S.convos.filter(c => c.draft && !c.draft.kept).length;
+const count = st => S.orders.filter(o => o.status === st).length;
+const nextTime = c => { const last = (c.msgs.at(-1) || {}).at || '10:00'; const m = /^(\d{1,2}):(\d{2})$/.exec(last); if (!m) return last; let t = (+m[1]) * 60 + (+m[2]) + 1; t %= 1440; return String(Math.floor(t / 60)).padStart(2,'0') + ':' + String(t % 60).padStart(2,'0'); };
+
+function toast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.hidden = false;
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => { t.hidden = true; }, 2800);
+}
+
+function nav(){
+  const items = [['inbox','Inbox',drafts()],['orders','Orders',0],['stock','Stock',0],['helper','Helper view',0]];
+  return `<nav class="nav" aria-label="Main">
+    <div class="brand">${ICON.logo}Kept</div>
+    ${items.map(([k,l,n]) => `<button type="button" data-act="view" data-v="${k}" ${S.view===k?'aria-current="page"':''}>${ICON[k]}<span>${l}</span>${n?`<span class="count" aria-label="${n} ${n===1?'draft':'drafts'} to review">${n}</span>`:''}</button>`).join('')}
+    <div class="grow"></div>
+    <div class="profile"><span class="avatar on">P</span><div><div style="font-weight:600">Priya</div><div class="small">Owner</div></div></div>
+  </nav>`;
+}
+
+function saleBar(extra){
+  if (!S.sale) return '';
+  return `<div class="sale" role="status">Sale mode on<span>${extra}</span></div>`;
+}
+
+function text(parts){
+  return parts.map(p => typeof p === 'string' ? esc(p) : `<span class="hl-${p.h}">${esc(p.t)}</span>`).join('');
+}
+
+function viewInbox(){
+  const c = convo(S.sel);
+  const list = S.convos.map(x => {
+    const o = x.order ? order(x.order) : null;
+    const chips = [`<span class="chip neutral">${CH[x.ch]}</span>`];
+    if (x.draft && !x.draft.kept) chips.push('<span class="chip ai">Draft ready</span>');
+    if (x.draft && x.draft.kept) chips.push('<span class="chip kept">Kept</span>');
+    if (o && o.status === 'unpaid') chips.push('<span class="chip unpaid">Unpaid</span>');
+    if (o && !o.addr) chips.push('<span class="chip check">Address</span>');
+    const last = x.msgs[x.msgs.length-1];
+    const prev = (last.f === 's' ? 'You: ' : '') + last.t.map(p => typeof p === 'string' ? p : p.t).join('');
+    return `<button type="button" class="convo" data-act="sel" data-id="${x.id}" aria-current="${S.sel===x.id}">
+      <span class="avatar ${S.sel===x.id?'on':''}">${esc(x.who.replace('@','')[0].toUpperCase())}</span>
+      <span class="body"><span class="row"><strong>${esc(x.who)}</strong><span class="small">${esc(x.time)}</span></span>
+      <span class="prev">${esc(prev)}</span><span class="chips">${chips.join('')}</span></span></button>`;
+  }).join('');
+  const msgs = c.msgs.map(m => m.f === 'x'
+    ? `<div class="msg sys">${esc(m.t[0])}</div>`
+    : `<div class="msg ${m.f==='s'?'me':''}">${text(m.t)}<time>${esc(m.at)}</time></div>`).join('');
+  return `
+  <div class="head"><h1>Inbox</h1><span class="grow"></span>
+    <button type="button" class="btn secondary sm" data-act="sale">${S.sale?'End sale mode':'Start sale mode'}</button></div>
+  ${saleBar(`<strong>${drafts()}</strong> ${drafts()===1?'draft':'drafts'} to review · <strong>${count('unpaid')}</strong> unpaid · <strong>${count('paid')}</strong> to pack`)}
+  ${S.tip?`<div class="tip" role="note"><strong>Start here</strong><ol><li>Pick a chat</li><li>Check the AI draft</li><li>Approve the order</li></ol><button type="button" class="btn quiet sm x" data-act="tip">Got it</button></div>`:''}
+  <div class="inbox">
+    <section class="list" aria-label="Conversations">${list}</section>
+    <section class="chat" aria-label="Chat with ${esc(c.who)}">
+      <div class="who"><span class="avatar on">${esc(c.who.replace('@','')[0].toUpperCase())}</span><div><div style="font-weight:600">${esc(c.who)}</div><div class="small">${CH[c.ch]}${c.merged?' · also messaged on Instagram, chats merged':''}</div></div></div>
+      <div class="msgs" id="msgs">${msgs}${S.typing===c.id?`<div class="typing">${esc(c.who)} is typing…</div>`:''}</div>
+      <div class="legend"><span><i style="background:var(--violet-tint);border:1.5px solid var(--violet)"></i>Read by AI</span><span><i style="background:var(--amber-tint);border:1.5px solid var(--amber-line)"></i>Needs a check</span></div>
+      <form class="compose" data-form="send">
+        <div class="field"><label for="reply">Reply to ${esc(c.who)}</label>
+        <input id="reply" type="text" autocomplete="off" placeholder="Type a message" value="${esc(S.compose[c.id]||'')}"></div>
+        <button type="submit" class="btn primary">Send</button>
+      </form>
+    </section>
+    <aside class="side" aria-label="Order">${c.draft ? draftCard(c) : c.order ? orderCard(order(c.order), c) : `<div class="empty">No order in this chat yet. When someone asks to buy, a draft appears here.</div>`}</aside>
+  </div>`;
+}
+
+function draftCard(c){
+  const d = c.draft, key = d.pre + d.size, a = avail(key);
+  if (d.kept){
+    const o = order(d.orderId);
+    return orderCard(o, c);
+  }
+  const soldOut = a < d.qty;
+  const checks = (d.sizeCheck?1:0) + (d.addrCheck?1:0);
+  const sizes = ['S','M','L'].map(s => `<button type="button" data-act="size" data-s="${s}" aria-pressed="${d.size===s}">${s}</button>`).join('');
+  let sizeRow;
+  if (soldOut) sizeRow = `<div class="f bad"><span class="k">Size</span><div class="v"><div class="sizes" role="group" aria-label="Size">${sizes}</div>
+      <span class="hint bad">${d.size} is sold out${held(key)?` (${held(key)} held by an unpaid order)`:''}.</span>
+      <button type="button" class="btn secondary sm" data-act="offer">Offer another size</button></div></div>`;
+  else if (d.sizeCheck) sizeRow = `<div class="f check"><span class="k">Size</span><div class="v"><div class="sizes" role="group" aria-label="Size">${sizes}</div>
+      <span class="hint">${esc(d.sizeHint)}</span>
+      <button type="button" class="btn secondary sm" data-act="askSize">Ask ${esc(c.who.split(' ')[0])} to confirm</button></div></div>`;
+  else sizeRow = `<div class="f"><span class="k">Size</span><div class="v"><div class="sizes" role="group" aria-label="Size">${sizes}</div></div></div>`;
+  const addrRow = d.addrCheck
+    ? `<div class="f check"><span class="k">Address</span><div class="v"><span class="addr">${esc(d.addr)}</span><span class="hint">No house or flat number</span>
+        <button type="button" class="btn secondary sm" data-act="askPin">Request location pin</button></div></div>`
+    : `<div class="f"><span class="k">Address</span><div class="v"><span class="addr">${esc(d.addr)}</span></div></div>`;
+  const stockChip = soldOut ? '<span class="chip unpaid">Sold out</span>'
+    : `<span class="chip ${a - d.qty <= 0 ? 'check' : 'paid'}">In stock · ${a - d.qty} left after this</span>`;
+  const foot = d.confirm
+    ? `<div class="confirm"><strong>${checks} ${checks===1?'check is':'checks are'} still open.</strong><span class="small">You can approve now and fix it later, or resolve it first.</span>
+        <div class="row" style="display:flex;flex-wrap:wrap;gap:8px"><button type="button" class="btn primary sm" data-act="approve" data-force="1">Approve anyway</button><button type="button" class="btn quiet sm" data-act="cancelConfirm">Go back</button></div></div>`
+    : `${checks?`<span class="hint" style="font-weight:600">${checks} ${checks===1?'thing':'things'} to check</span>`:'<span class="small">Everything looks complete.</span>'}
+       <div class="row"><button type="button" class="btn primary" data-act="approve" ${soldOut?'disabled':''}>${soldOut?'Pick an available size':'Approve order'}</button>
+       <button type="button" class="btn quiet" data-act="discard">Discard</button></div>`;
+  return `<article class="card draft">
+    <div class="top"><h2>Draft order</h2><span class="chip ai">Drafted by AI</span></div>
+    <p class="small" style="margin:0 0 8px">Check each field, then approve. Nothing is sent to ${esc(c.who.split(' ')[0])}.</p>
+    <div class="f"><span class="k">Customer</span><div class="v"><strong>${esc(c.who)}</strong></div></div>
+    ${addrRow}
+    <div class="f"><span class="k">Item</span><div class="v">${esc(d.product)}</div></div>
+    ${sizeRow}
+    <div class="f"><span class="k">Quantity</span><div class="v">${d.qty}</div></div>
+    <div class="f"><span class="k">Stock</span><div class="v">${stockChip}</div></div>
+    <div class="pay no"><span class="big">Not paid yet</span><small>You'll mark it Paid after checking your bank.</small></div>
+    <div class="foot">${foot}</div>
+  </article>`;
+}
+
+function statusChip(o){
+  return {unpaid:'<span class="chip unpaid">Unpaid</span>', paid:'<span class="chip paid">Paid</span>', packed:'<span class="chip kept">Packed</span>', delivered:'<span class="chip neutral">Delivered</span>'}[o.status];
+}
+
+function orderCard(o, c){
+  const idx = {unpaid:0, paid:1, packed:2, delivered:3}[o.status];
+  const steps = ['Approved','Paid','Packed','Delivered'].map((l,i) => `<li class="${i<=idx?'done':i===idx+1?'now':''}">${l}</li>`).join('');
+  const nextTxt = ['Next: check your bank, then mark it Paid','Next: Arjun packs it','Next: hand it to the courier','All done'][idx];
+  const addrRow = o.addr ? `<div class="f"><span class="k">Address</span><div class="v"><span class="ok">Complete</span></div></div>`
+    : `<div class="f check"><span class="k">Address</span><div class="v"><span class="hint">Missing a flat number</span><button type="button" class="btn secondary sm" data-act="askPin">Request location pin</button></div></div>`;
+  const pay = o.status === 'unpaid'
+    ? `<div class="pay no"><span class="big">Not paid yet</span><small>Mark it Paid on the Orders board after checking your bank.</small></div>`
+    : `<div class="pay yes"><span class="big">Paid</span><small>Confirmed in your bank.</small></div>`;
+  return `<article class="card kept">
+    <div class="top"><h2>Order #${o.id}</h2><span class="chip kept">Kept</span></div>
+    <ol class="steps" aria-label="Order progress">${steps}</ol>
+    <p class="small" style="margin:0 0 4px;font-weight:600;color:var(--ink)">${nextTxt}</p>
+    ${pay}
+    <div class="f"><span class="k">Customer</span><div class="v"><strong>${esc(o.who)}</strong></div></div>
+    ${addrRow}
+    <div class="f"><span class="k">Item</span><div class="v">${esc(itemName(o))} × ${o.qty}</div></div>
+    <div class="foot"><button type="button" class="btn secondary" data-act="view" data-v="orders">Open Orders board</button></div>
+  </article>`;
+}
+
+function ocard(o){
+  const meta = `<div class="meta"><span>#${o.id} · ${CH[o.ch]}</span><span>${o.status==='unpaid'?esc(o.age||'just now'):o.status==='paid'?'On pick list':o.status==='packed'?'Packed by Arjun':''}</span></div>`;
+  const base = `${meta}<strong>${esc(o.who)}</strong><div style="font-size:13px">${esc(itemName(o))} × ${o.qty}</div>`;
+  if (o.status === 'unpaid'){
+    const act = S.confirmPay === o.id
+      ? `<div class="confirm"><strong style="font-size:13px">Has the money shown in your bank?</strong><span class="small">A screenshot is not proof of payment.</span>
+          <div style="display:flex;flex-wrap:wrap;gap:6px"><button type="button" class="btn primary sm" data-act="paid" data-id="${o.id}">Yes, mark paid</button><button type="button" class="btn quiet sm" data-act="cancelPay">Not yet</button></div></div>`
+      : `<button type="button" class="btn secondary sm" data-act="askPaid" data-id="${o.id}">Mark paid</button>`;
+    return `<article class="oc ${S.newOrder===o.id?'new':''}">${base}<div class="pay no" style="margin:0;padding:6px 10px"><span>Not paid yet</span></div>${act}</article>`;
+  }
+  if (o.status === 'paid') return `<article class="oc">${base}<div class="pay yes" style="margin:0;padding:6px 10px"><span>Paid</span></div>${o.note?`<div class="note">${esc(o.note)}</div>`:''}${o.addr?'':'<span class="chip check" style="align-self:flex-start">Waiting for location pin</span>'}</article>`;
+  if (o.status === 'packed') return `<article class="oc">${base}<button type="button" class="btn primary sm" data-act="deliver" data-id="${o.id}">Mark delivered</button></article>`;
+  return `<article class="oc done"><div class="meta"><span>#${o.id} · ${CH[o.ch]}</span></div><div style="font-size:13px">${esc(o.who)} · ${esc(itemName(o))}</div></article>`;
+}
+
+function viewOrders(){
+  const cols = [['unpaid','Unpaid','var(--red)'],['paid','Paid','var(--green)'],['making','Making','var(--line-strong)'],['packed','Packed','var(--teal)'],['delivered','Delivered','var(--muted)']];
+  return `<div class="head"><h1>Orders</h1><span class="grow"></span><button type="button" class="btn secondary sm" data-act="sale">${S.sale?'End sale mode':'Start sale mode'}</button></div>
+  ${saleBar('Mark an order Paid only after the money shows in your bank.')}
+  <div class="board">${cols.map(([k,l,c]) => {
+    const os = S.orders.filter(o => o.status === k).sort((a,b) => b.id - a.id);
+    const body = k === 'making' ? '<div class="empty">Nothing being made. Made-to-order items, like cakes or custom jewellery, move here after payment.</div>'
+      : os.length ? os.map(ocard).join('') : '<div class="empty">Nothing here right now.</div>';
+    return `<section class="col" aria-label="${l}"><div class="ch"><h2><span class="dot" style="background:${c}"></span>${l}</h2><span class="small">${k==='making'?0:os.length}</span></div>${body}</section>`;
+  }).join('')}</div>`;
+}
+
+function viewStock(){
+  const rows = Object.entries(S.products).map(([k,p]) => {
+    const h = held(k), a = p.stock - h;
+    const chip = a <= 0 ? '<span class="chip unpaid">Sold out</span>' : a === 1 ? '<span class="chip check">Last one</span>' : '<span class="chip paid">In stock</span>';
+    return `<tr><td><strong>${esc(p.name)}</strong></td><td>${esc(p.v)}</td><td class="num">${p.stock}</td><td class="num" style="color:var(--muted)">${h}</td><td class="num"><strong>${Math.max(a,0)}</strong></td><td>${chip}</td></tr>`;
+  }).join('');
+  return `<div class="head"><h1>Stock</h1>
+    <div class="seg" role="group" aria-label="Stock type"><button type="button" data-act="mode" data-m="units" aria-pressed="${S.stockMode==='units'}">Units</button><button type="button" data-act="mode" data-m="capacity" aria-pressed="${S.stockMode==='capacity'}">Daily capacity</button></div></div>
+  ${saleBar('Available counts already subtract units held by unpaid orders.')}
+  <div class="stock">
+    ${S.stockMode==='units' ? `<section style="display:flex;flex-direction:column;gap:12px;min-width:0">
+      <p class="small" style="margin:0;font-size:13px">Available = in stock minus units held by approved, unpaid orders. Approve or pay an order and watch these numbers change.</p>
+      <div class="tablewrap"><table><thead><tr><th scope="col">Product</th><th scope="col">Variant</th><th scope="col" class="num">In stock</th><th scope="col" class="num">Held (unpaid)</th><th scope="col" class="num">Available</th><th scope="col">Status</th></tr></thead><tbody>${rows}</tbody></table></div>
+    </section>` : `<section class="panel"><h2 style="font-size:16px">This view is for made-to-order sellers</h2><p class="small" style="margin:0;font-size:13px">Makers like bakers and jewellers run out of time slots and materials, not units. Their stock is set as daily capacity instead.</p></section>`}
+    <aside class="panel" aria-label="Daily capacity">
+      <div><h2 style="font-size:16px">Daily capacity</h2><p class="small" style="margin:2px 0 0">For made-to-order sellers: stock is slots and materials.</p></div>
+      ${[['Saturday · custom cakes','6 of 8 slots',75,'var(--teal)',''],['Sunday · custom cakes','8 of 8 · Full',100,'var(--red)','var(--red)'],['Material · blue glass beads','Enough for 2',20,'var(--amber-line)','var(--amber)']].map(([l,v,w,c,tc]) =>
+        `<div style="display:flex;flex-direction:column;gap:6px"><div style="display:flex;justify-content:space-between;gap:8px;font-size:13px"><span>${l}</span><strong style="color:${tc||'inherit'}">${v}</strong></div><div class="bar"><i style="width:${w}%;background:${c}"></i></div></div>`).join('')}
+    </aside>
+  </div>`;
+}
+
+function viewHelper(){
+  const toPack = S.orders.filter(o => o.status === 'paid').sort((a,b) => b.id - a.id);
+  const packed = S.orders.filter(o => o.status === 'packed');
+  const cards = toPack.length ? toPack.map(o => `<article class="pc">
+      <div style="display:flex;justify-content:space-between;font-size:13px;color:var(--muted)"><span>#${o.id}</span><span>${esc(o.who)}</span></div>
+      <div class="t">${esc(itemName(o))} × ${o.qty}</div>
+      ${o.note?`<div style="font-size:15px;padding:8px 12px;border-radius:8px;background:var(--sunk)">${esc(o.note)}</div>`:''}
+      ${o.addr?'<div class="ok">Address complete</div>':`<div class="wait">Waiting for the location pin. Priya has asked ${esc(o.who.split(' ')[0])}.</div>`}
+      <button type="button" class="btn ${o.addr?'primary':''}" data-act="pack" data-id="${o.id}" ${o.addr?'':'disabled'}>${o.addr?'Mark packed':'Pack after address arrives'}</button>
+    </article>`).join('') : '<div class="empty">All caught up. Paid orders will appear here.</div>';
+  return `<div class="head"><h1>Helper view</h1><span class="small">What Arjun sees on his phone</span></div>
+  <div class="phone-wrap">
+    <div class="phone" aria-label="Arjun's packing list">
+      <div style="display:flex;align-items:center;gap:8px">${ICON.logo}<strong>Kept</strong><span class="small" style="margin-left:auto">Arjun · helper</span></div>
+      <h2>Packing list</h2>
+      ${S.sale?`<div class="sale" style="font-size:14px">Sale mode on<span><strong>${toPack.length}</strong> to pack · <strong>${packed.length}</strong> packed</span></div>`:''}
+      ${cards}
+    </div>
+    <div class="explain"><h2>Why it works this way</h2>
+      <p style="margin:0">Helpers used to pack from forwarded screenshots and come back with questions. Here Arjun sees only paid orders, with the buyer's note and an address check.</p>
+      <p style="margin:0">Orders still waiting for a location pin can't be packed by mistake. Try sending Farah a pin request from the Inbox, then come back.</p></div>
+  </div>`;
+}
+
+function render(){
+  const v = {inbox:viewInbox, orders:viewOrders, stock:viewStock, helper:viewHelper}[S.view]();
+  document.getElementById('app').innerHTML = `<div class="app">${nav()}<main class="main">${v}</main></div>`;
+  const m = document.getElementById('msgs'); if (m) m.scrollTop = m.scrollHeight;
+}
+
+function reply(c, text, after){
+  S.typing = c.id; render();
+  setTimeout(() => {
+    S.typing = null;
+    c.msgs.push({f:'b', t:[text], at:nextTime(c)});
+    c.time = 'now';
+    after && after();
+    render();
+  }, 1200);
+}
+
+function send(){
+  const c = convo(S.sel), input = document.getElementById('reply');
+  const val = (input ? input.value : '').trim();
+  if (!val) return;
+  c.msgs.push({f:'s', t:[val], at:nextTime(c)});
+  S.compose[c.id] = '';
+  const p = c.pending; c.pending = null;
+  render();
+  if (p === 'size') reply(c, 'M please!', () => { c.draft.size = 'M'; c.draft.sizeCheck = false; toast('Size confirmed: M'); });
+  else if (p === 'offer'){ const alt = c.draft.alt; reply(c, `Oh no! Yes, ${alt} works`, () => { c.draft.size = alt; c.draft.sizeCheck = false; toast(`Draft updated to size ${alt}`); }); }
+  else if (p === 'pin'){ const pin = {riya:'12 Lake View Road, Flat 4B', farah:'27 Rose Lane, Unit 5'}[c.id] || 'my saved address, Unit 2'; reply(c, 'Location pin: ' + pin, () => {
+    if (c.draft && !c.draft.kept){ c.draft.addr = pin; c.draft.addrCheck = false; }
+    const o = c.order ? order(c.order) : c.draft && c.draft.orderId ? order(c.draft.orderId) : null;
+    if (o) o.addr = true;
+    toast('Address updated from the location pin');
+  }); }
+}
+
+function prefill(text, pending){
+  const c = convo(S.sel);
+  S.compose[c.id] = text; c.pending = pending;
+  render();
+  const i = document.getElementById('reply'); if (i){ i.focus(); i.setSelectionRange(i.value.length, i.value.length); }
+  toast('Saved reply added. Review it, then Send.');
+}
+
+document.addEventListener('input', e => { if (e.target.id === 'reply') S.compose[S.sel] = e.target.value; });
+document.addEventListener('submit', e => { if (e.target.dataset.form === 'send'){ e.preventDefault(); send(); } });
+document.addEventListener('click', e => {
+  const b = e.target.closest('[data-act]'); if (!b) return;
+  const a = b.dataset.act, c = convo(S.sel), id = +b.dataset.id;
+  if (a === 'reset'){ S = fresh(); render(); toast('Demo reset'); return; }
+  if (a === 'view'){ S.view = b.dataset.v; render(); window.scrollTo(0,0); return; }
+  if (a === 'sel'){ S.sel = b.dataset.id; render(); if (innerWidth <= 860){ const ch = document.querySelector('.chat'); if (ch) ch.scrollIntoView({behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block:'start'}); } return; }
+  if (a === 'tip'){ S.tip = false; render(); return; }
+  if (a === 'sale'){ S.sale = !S.sale; render(); toast(S.sale ? 'Sale mode on' : 'Sale mode off'); return; }
+  if (a === 'mode'){ S.stockMode = b.dataset.m; render(); return; }
+  if (a === 'size'){ c.draft.size = b.dataset.s; c.draft.sizeCheck = false; c.draft.confirm = false; render(); return; }
+  if (a === 'askSize'){ prefill('Just to confirm, would you like M or L?', 'size'); return; }
+  if (a === 'offer'){
+    const alt = ['M','S','L'].find(z => z !== c.draft.size && avail(c.draft.pre + z) >= c.draft.qty);
+    c.draft.alt = alt || null;
+    prefill(alt ? `So sorry, ${c.draft.size} just sold out. ${alt} is available. Would that work?` : `So sorry, that one just sold out. I'll let you know when it's back.`, alt ? 'offer' : null);
+    return;
+  }
+  if (a === 'askPin'){ prefill('Could you send your location pin so the courier can find you easily?', 'pin'); return; }
+  if (a === 'cancelConfirm'){ c.draft.confirm = false; render(); return; }
+  if (a === 'discard'){ c.draft = null; render(); toast('Draft discarded'); return; }
+  if (a === 'approve'){
+    const d = c.draft, open = (d.sizeCheck?1:0) + (d.addrCheck?1:0);
+    if (open && !b.dataset.force){ d.confirm = true; render(); return; }
+    const o = {id:S.nextId++, who:c.who, ch:c.ch, p:d.pre + d.size, qty:d.qty, status:'unpaid', addr:!d.addrCheck, conv:c.id, age:'just now'};
+    S.orders.push(o); d.kept = true; d.orderId = o.id; d.confirm = false; S.newOrder = o.id;
+    render(); toast(`Order #${o.id} kept. Added to Unpaid.`); return;
+  }
+  if (a === 'askPaid'){ S.confirmPay = id; render(); return; }
+  if (a === 'cancelPay'){ S.confirmPay = null; render(); return; }
+  if (a === 'paid'){ const o = order(id); o.status = 'paid'; S.products[o.p].stock -= o.qty; S.confirmPay = null; render(); toast(`#${id} marked paid. It's on Arjun's pick list.`); return; }
+  if (a === 'pack'){ const o = order(id); o.status = 'packed'; render(); toast(`#${id} packed. The board updated.`); return; }
+  if (a === 'deliver'){ const o = order(id); o.status = 'delivered'; render(); toast(`#${id} delivered`); return; }
+});
+render();
+</script>
+<script>(function(){var h=location.hash&&document.getElementById(location.hash.slice(1));try{(h||document.body).scrollIntoView({block:"start"});}catch(e){}})();</script>
+</body>
+</html>

@@ -1,0 +1,278 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Kept · Case study by Amulya</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Figtree:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#f2f3ef;--card:#ffffff;--ink:#14171a;--muted:#585e59;--line:#d8dbd3;
+  --accent:#2b44c8;--project:#0f5f5c;--on-project:#ffffff;--project-tint:#e3f0ee;--warn:#7a4e00;--warn-tint:#fdf1d6;
+  --display:'Bricolage Grotesque',ui-sans-serif,system-ui,sans-serif;
+  --body:'Figtree',ui-sans-serif,system-ui,-apple-system,'Segoe UI',sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --paper:#121412;--card:#1a1d19;--ink:#eceee8;--muted:#a3a9a2;--line:#2c302b;
+  --accent:#8fa2ff;--project:#4fb3ac;--on-project:#121412;--project-tint:#183331;--warn:#f0c46a;--warn-tint:#3a2c10;color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#121412;--card:#1a1d19;--ink:#eceee8;--muted:#a3a9a2;--line:#2c302b;
+  --accent:#8fa2ff;--project:#4fb3ac;--on-project:#121412;--project-tint:#183331;--warn:#f0c46a;--warn-tint:#3a2c10;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font:17px/1.65 var(--body);-webkit-font-smoothing:antialiased;padding-inline:20px;padding-block:0 80px}
+a{color:var(--accent)}
+a:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+img{max-width:100%;height:auto;display:block}
+h1,h2,h3{font-family:var(--display);font-weight:700;letter-spacing:-.02em;text-wrap:balance;margin:0}
+p{margin:0}
+.wrap{max-width:1120px;margin:0 auto}
+.col{max-width:680px;margin:0 auto;display:flex;flex-direction:column;gap:18px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:16px;padding-block:calc(20px + env(safe-area-inset-top,0px)) 20px;font-weight:600}
+.top a{text-decoration:none;color:var(--ink)}
+.label{font:500 12px/1.4 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.hero{padding-block:48px 32px;display:flex;flex-direction:column;gap:20px;max-width:880px;margin:0 auto}
+.hero h1{font-size:clamp(40px,7vw,76px);line-height:.98}
+.hero .lede{font-size:clamp(19px,2.4vw,22px);line-height:1.5;color:var(--muted);max-width:640px}
+.cta{display:flex;flex-wrap:wrap;gap:12px}
+.btn{display:inline-flex;align-items:center;gap:10px;min-height:48px;padding:0 22px;border-radius:999px;font-weight:600;text-decoration:none;border:1.5px solid var(--ink);color:var(--ink)}
+.btn.solid{background:var(--project);border-color:var(--project);color:var(--on-project)}
+.facts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:14px;overflow:hidden;max-width:1120px;margin:0 auto 40px}
+.facts div{background:var(--card);padding:16px 18px;display:flex;flex-direction:column;gap:4px;min-width:0}
+.facts strong{font-weight:600;font-size:15px;line-height:1.45}
+figure{margin:0;display:flex;flex-direction:column;gap:10px}
+figure.wide{max-width:1120px;margin:16px auto}
+figure img{border-radius:12px;border:1px solid var(--line)}
+figcaption{font-size:14px;color:var(--muted);max-width:680px}
+section{padding-block:36px;border-top:1px solid var(--line)}
+section h2{font-size:clamp(28px,4vw,38px);line-height:1.1}
+section h3{font-size:22px;line-height:1.2;margin-top:12px}
+.q{font-family:var(--display);font-size:clamp(22px,3vw,28px);line-height:1.3;font-weight:500;border-left:none;margin:8px 0;padding:20px 24px;background:var(--project-tint);border-radius:14px}
+ol.ins{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:14px;counter-reset:i}
+ol.ins li{display:grid;grid-template-columns:36px minmax(0,1fr);gap:12px;counter-increment:i}
+ol.ins li::before{content:counter(i,decimal-leading-zero);font:500 13px/1.9 var(--mono);color:var(--project)}
+ul{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:8px}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;max-width:1120px;margin:16px auto 0}
+.persona{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:10px;min-width:0;font-size:15px;line-height:1.55}
+.persona h3{margin:0;font-size:20px}
+.persona .stock{font:500 12px/1.5 var(--mono);color:var(--project)}
+.persona blockquote{margin:auto 0 0;padding-top:12px;border-top:1px solid var(--line);font-style:italic;color:var(--muted)}
+.scroll{overflow-x:auto;max-width:1120px;margin:16px auto 0;border:1px solid var(--line);border-radius:14px;background:var(--card)}
+table{border-collapse:collapse;width:100%;min-width:760px;font-size:15px;line-height:1.5}
+th{text-align:left;font:500 12px/1.4 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding:12px 16px;border-bottom:1px solid var(--line)}
+td{padding:12px 16px;border-bottom:1px solid var(--line);vertical-align:top}
+tr:last-child td{border-bottom:none}
+.mood{display:inline-flex;align-items:center;gap:8px;font:500 13px var(--mono);white-space:nowrap}
+.mood i{width:10px;height:10px;border-radius:999px;display:inline-block}
+.m-high i{background:var(--project)} .m-mid i{background:var(--muted)} .m-low i{background:#c0392b}
+.opp{color:var(--project);font-weight:600}
+.flows{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;max-width:1120px;margin:16px auto 0}
+.flow{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.flow ol{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px}
+.flow li{border:1px solid var(--line);border-radius:10px;padding:10px 14px;font-size:15px;line-height:1.5;position:relative}
+.flow li.dec{border-style:dashed}
+.flow li.dec small{display:block;color:var(--warn);font-size:13px}
+.flow li.end{border-color:var(--project);background:var(--project-tint);font-weight:600}
+.scope{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.box{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:10px;font-size:15px;line-height:1.55;min-width:0}
+.screens{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;max-width:1120px;margin:16px auto 0}
+.screens figure img{aspect-ratio:16/10;object-fit:cover;object-position:top left}
+.screens .fit img{aspect-ratio:auto;object-fit:contain}
+.screens .phone img{aspect-ratio:auto;max-height:520px;width:auto;margin:0 auto;object-fit:contain}
+.ph{display:inline-block;font:500 14px var(--mono);background:var(--warn-tint);color:var(--warn);padding:1px 8px;border-radius:6px}
+.results{display:grid;grid-template-columns:minmax(112px,2fr) minmax(0,3fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.results div{background:var(--card);padding:12px 16px}
+.final{max-width:880px;margin:40px auto 0;padding:32px;border-radius:20px;background:var(--project-tint);display:flex;flex-wrap:wrap;gap:20px;align-items:center;justify-content:space-between}
+.final h2{font-size:clamp(24px,3.5vw,32px)}
+.next{max-width:1120px;margin:48px auto 0;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;font-weight:600}
+@media (max-width:900px){.facts{grid-template-columns:repeat(2,minmax(0,1fr))}.grid3,.flows,.screens,.scope{grid-template-columns:minmax(0,1fr)}}
+@media (prefers-reduced-motion:reduce){*{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top"><a href="index.html">Amulya</a><a href="index.html#work">All work</a></header>
+</div>
+
+<header class="hero">
+  <span class="label">Case 01 · B2B dashboard · 2026</span>
+  <h1>Kept: designing for the busiest day of a small seller's week</h1>
+  <p class="lede">A dashboard that turns WhatsApp, Instagram and Facebook chats into confirmed orders, built around the moment a post goes viral and the phone won't stop buzzing.</p>
+  <div class="cta">
+    <a class="btn solid" href="kept-app.html">Try the live prototype →</a>
+    <a class="btn" href="#solution">Jump to the solution</a>
+  </div>
+</header>
+
+<div class="facts" role="list">
+  <div role="listitem"><span class="label">My role</span><strong>Product designer, end to end</strong></div>
+  <div role="listitem"><span class="label">Type</span><strong>Self-initiated concept, B2B SaaS</strong></div>
+  <div role="listitem"><span class="label">Platform</span><strong>Web dashboard, mobile helper view</strong></div>
+  <div role="listitem"><span class="label">Deliverables</span><strong>Research, personas, flows, wireframes, design system, prototype</strong></div>
+</div>
+
+<figure class="wide">
+  <img src="KeptInbox.png" alt="Kept inbox: a chat in the middle and an AI-drafted order on the right with two fields flagged for a check" width="2880" height="1800">
+  <figcaption>The inbox during a sale. The AI drafts the order from the chat; the seller checks the flagged fields and approves.</figcaption>
+</figure>
+
+<section><div class="col">
+  <span class="label">The problem</span>
+  <h2>Orders that arrive as conversations</h2>
+  <p>A clothing reseller posts 15 pieces on Instagram. Within an hour, messages pour in across Instagram, WhatsApp and Facebook: "Is the navy one available?", "M or L?", "Send it to the address near the park." She replies to each, copies the details into a spreadsheet, checks her bank to see who has really paid, and forwards screenshots to whoever is helping her pack.</p>
+  <p>Tools built for online stores assume a website, a catalogue and a checkout. These sellers have none of that. Existing tools either live inside one app, assume a Shopify store, or track stock without ever seeing the chats.</p>
+  <p class="q">How might we help a small seller stay in control of orders, stock and payments on the day her post goes viral, without changing how her customers like to buy?</p>
+</div></section>
+
+<section><div class="col">
+  <span class="label">Research</span>
+  <h2>What I looked at</h2>
+  <ul>
+    <li><strong>Desk research:</strong> reports on social and conversational commerce, guides written for social sellers, and data on reply times, overselling and payment fraud.</li>
+    <li><strong>Competitor review:</strong> six tools across chat-to-order apps, WhatsApp inboxes and CRMs, and multichannel inventory software.</li>
+    <li><strong>Seller profiles:</strong> app reviews, articles and seller discussions organised into five composite profiles: a home baker, a clothing reseller, a snacks seller, a jewellery maker and an accessories seller.</li>
+  </ul>
+  <p style="color:var(--muted);font-size:15px">Composite profiles show patterns across many sellers, but they are not interviews. I treated every insight as a hypothesis and checked it with a usability test.</p>
+</div></section>
+
+<section><div class="col">
+  <span class="label">Insights</span>
+  <h2>Sellers weren't struggling to make or pack. They were struggling to remember.</h2>
+  <ol class="ins">
+    <li><span><strong>Tracking is the bottleneck.</strong> Sellers can handle 30–40 orders; what breaks is finding one buyer's size in 100+ messages.</span></li>
+    <li><span><strong>Approval is non-negotiable.</strong> Help drafting orders was welcome, but only if the seller approves each one. Nothing may message buyers automatically.</span></li>
+    <li><span><strong>Payment checking is already a habit.</strong> Sellers distrust screenshots and check their bank. They need a clear Paid / Unpaid status, not fraud detection.</span></li>
+    <li><span><strong>"Stock" means two things.</strong> Resellers run out of units; makers run out of time slots and materials.</span></li>
+    <li><span><strong>Helpers are cut off.</strong> Family members who pack work from forwarded screenshots, then come back with questions.</span></li>
+    <li><span><strong>Past tools added work.</strong> Shopify felt too formal, inventory software was built for shops, Trello needed manual updates.</span></li>
+  </ol>
+  <p>These cut my first idea down: auto-replies, payment links and TikTok support all went.</p>
+</div></section>
+
+<section>
+  <div class="col"><span class="label">Personas</span><h2>Who I designed for</h2></div>
+  <div class="grid3">
+    <article class="persona"><span class="label">Primary</span><h3>Priya, the reseller</h3><span class="stock">Stock = units per size and colour</span><p>Sells clothing and jewellery, 20–40 orders on a sale day. Instagram brings buyers; WhatsApp closes the order.</p><p><strong>Needs:</strong> never promise a sold-out piece; know exactly who has paid.</p><blockquote>"During a sale, I need to know instantly what is actually available."</blockquote></article>
+    <article class="persona"><span class="label">Primary</span><h3>Hana, the maker</h3><span class="stock">Stock = slots and materials</span><p>Bakes cakes or makes jewellery to order, from a notebook or a sheet she forgets to update.</p><p><strong>Needs:</strong> stop scrolling for one flavour or date; approve every AI draft herself.</p><blockquote>"I'm struggling to remember what everyone ordered."</blockquote></article>
+    <article class="persona"><span class="label">Secondary</span><h3>Arjun, the helper</h3><span class="stock">No chat access</span><p>A family member who packs on busy days, working from forwarded screenshots.</p><p><strong>Needs:</strong> pack the right item with the right note without interrupting the owner.</p><blockquote>"If a note is missing, I have to go back and ask."</blockquote></article>
+  </div>
+</section>
+
+<section>
+  <div class="col"><span class="label">Journey map</span><h2>Priya's sale day dips while tracking orders, not while packing</h2></div>
+  <div class="scroll"><table>
+    <thead><tr><th scope="col">Stage</th><th scope="col">Mood</th><th scope="col">Pain today</th><th scope="col">Design opportunity</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Post goes live</strong></td><td><span class="mood m-high"><i></i>High</span></td><td>Comments and DMs land on three apps at once</td><td class="opp">One inbox for WhatsApp, Instagram and Facebook</td></tr>
+      <tr><td><strong>Replies to the flood</strong></td><td><span class="mood m-mid"><i></i>Mid</span></td><td>Same price and size questions, again and again</td><td class="opp">Live stock shown beside every chat</td></tr>
+      <tr><td><strong>Collects details</strong></td><td><span class="mood m-low"><i></i>Low</span></td><td>Size, colour and address arrive in mixed formats</td><td class="opp">AI drafts the order; she approves it</td></tr>
+      <tr><td><strong>Checks stock</strong></td><td><span class="mood m-low"><i></i>Low</span></td><td>Last piece sold on Instagram, promised again on WhatsApp</td><td class="opp">Warning before promising a sold-out item</td></tr>
+      <tr><td><strong>Confirms payment</strong></td><td><span class="mood m-low"><i></i>Low</span></td><td>An edited screenshot almost got packed</td><td class="opp">Mark Paid only after checking the bank</td></tr>
+      <tr><td><strong>Hands to packer</strong></td><td><span class="mood m-mid"><i></i>Mid</span></td><td>Forwards order screenshots to her husband</td><td class="opp">Pick list with notes for the helper</td></tr>
+      <tr><td><strong>Ships parcels</strong></td><td><span class="mood m-mid"><i></i>Mid</span></td><td>"Near the temple" addresses mean extra calls</td><td class="opp">Flags gaps; one-tap location pin request</td></tr>
+      <tr><td><strong>Night catch-up</strong></td><td><span class="mood m-low"><i></i>Low</span></td><td>Updates Excel late at night, where mistakes creep in</td><td class="opp">The order board stays current as she works</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section><div class="col">
+  <span class="label">Principles and scope</span>
+  <h2>Four rules that decided what got built</h2>
+  <ol class="ins">
+    <li><span><strong>Calm in the rush.</strong> The opposite of a phone that won't stop buzzing.</span></li>
+    <li><span><strong>The seller approves, always.</strong> AI drafts; people decide.</span></li>
+    <li><span><strong>No double entry.</strong> If a seller types something twice, the design failed.</span></li>
+    <li><span><strong>Status in words, not just colour.</strong> Every state carries a label.</span></li>
+  </ol>
+  <div class="scope">
+    <div class="box"><span class="label">In scope</span><ul><li>One inbox, one buyer's chats merged</li><li>AI draft orders the seller approves</li><li>Live stock in units or daily capacity</li><li>Paid / Unpaid after a bank check</li><li>Order board from Unpaid to Delivered</li><li>Mobile pick list for helpers</li><li>Address check with a location pin request</li></ul></div>
+    <div class="box"><span class="label">Left out, on purpose</span><ul><li>Automatic replies to buyers (breaks the approval rule)</li><li>Fake-screenshot detection (sellers already check their bank)</li><li>TikTok (never came up in research)</li><li>Payment and courier integrations</li></ul></div>
+  </div>
+</div></section>
+
+<section>
+  <div class="col"><span class="label">User flows</span><h2>Nothing becomes an order until the seller approves it</h2></div>
+  <div class="flows">
+    <div class="flow"><span class="label">Flow 1 · chat to paid order</span><ol>
+      <li>A message arrives on WhatsApp, Instagram or Facebook</li>
+      <li>AI drafts an order card: product, variant, quantity, address</li>
+      <li class="dec">Are the details clear?<small>If not, unclear fields are highlighted; she edits or asks the buyer</small></li>
+      <li class="dec">Is it in stock?<small>If not, a sold-out warning; she offers another option</small></li>
+      <li>Priya approves; the order is saved as Unpaid and stock is held</li>
+      <li class="end">She checks her bank and marks it Paid</li>
+    </ol></div>
+    <div class="flow"><span class="label">Flow 2 · paid order to delivered</span><ol>
+      <li>The paid order appears on Arjun's pick list</li>
+      <li class="dec">Is the address complete?<small>If not, Priya sends a one-tap location pin request</small></li>
+      <li>Arjun packs it and taps Packed</li>
+      <li class="end">The board updates live: Packed, then Delivered</li>
+    </ol></div>
+  </div>
+</section>
+
+<section>
+  <div class="col"><span class="label">Wireframes</span><h2>Structure first, in grey</h2><p>Four screens in low fidelity to test the layout and flows before any visual decisions.</p></div>
+  <div class="screens">
+    <figure><img src="WireInbox.png" alt="Wireframe of the inbox with conversation list, chat and draft order panel" loading="lazy" width="2160" height="1350"><figcaption>Inbox with draft order</figcaption></figure>
+    <figure><img src="WireOrders.png" alt="Wireframe of the orders board with five status columns" loading="lazy" width="2160" height="1350"><figcaption>Orders board</figcaption></figure>
+    <figure><img src="WireStock.png" alt="Wireframe of the stock table with a capacity panel" loading="lazy" width="2160" height="1350"><figcaption>Stock</figcaption></figure>
+    <figure class="phone"><img src="WirePicklist.png" alt="Wireframe of the mobile pick list for helpers" loading="lazy" width="585" height="1266"><figcaption>Helper pick list</figcaption></figure>
+  </div>
+</section>
+
+<section id="solution">
+  <div class="col"><span class="label">The solution</span><h2>Four screens, one calm rhythm</h2>
+  <p>The final UI follows the two flows. Every screen shares the sale mode bar, so the seller and helpers always know it's a busy period.</p></div>
+  <div class="screens">
+    <figure><img src="KeptOrders.png" alt="Orders board with Unpaid, Paid, Making, Packed and Delivered columns" loading="lazy" width="2880" height="1800"><figcaption><strong>Orders board.</strong> Mark Paid asks whether the money has shown in the bank. Making only fills for made-to-order sellers, and its empty state says so.</figcaption></figure>
+    <figure><img src="KeptStock.png" alt="Stock table showing available units after unpaid holds, with a daily capacity panel" loading="lazy" width="2880" height="1800"><figcaption><strong>Stock.</strong> Available counts subtract units held by unpaid orders, so the same piece is never promised twice. Makers see capacity instead.</figcaption></figure>
+    <figure class="phone"><img src="KeptPicklist.png" alt="Mobile pick list with one order per card and a large Mark packed button" loading="lazy" width="780" height="1688"><figcaption><strong>Helper pick list.</strong> Big buttons, one order per card. Orders waiting for a location pin can't be packed by mistake.</figcaption></figure>
+    <figure class="fit"><img src="KeptSystem.png" alt="Kept design system: palette, draft and kept order cards, status chips, buttons and the sale mode bar" loading="lazy" width="2400" height="1338"><figcaption><strong>Design system.</strong> Teal is the only action colour. Violet is reserved for AI-drafted content: a dashed draft turns solid teal once kept.</figcaption></figure>
+  </div>
+</section>
+
+<section><div class="col">
+  <span class="label">Validation</span>
+  <h2>Three sellers, four tasks, zero oversold items</h2>
+  <p>I tested the prototype with three people who sell through chat apps: a home baker, a clothing reseller and a homemade snacks seller. Each tried four tasks: approve a draft with an unclear size, check whether the last L could be promised, decide whether a payment screenshot means Paid, and pack the next order as the helper.</p>
+  <div class="results">
+    <div>Task success</div><div><strong>3 of 3</strong> completed all four tasks without help</div>
+    <div>Time to approve an order</div><div><strong>15–30 sec</strong> vs. 2–4 min by hand</div>
+    <div>Sold-out items promised</div><div><strong>0</strong>, all three spotted that L was sold out</div>
+    <div>Payment screenshot</div><div><strong>3 of 3</strong> checked their bank before marking Paid</div>
+    <div>Average ease rating</div><div><strong>4.8 / 5</strong></div>
+  </div>
+  <p class="q">"I liked that it pulled the information from the chat instead of making me type everything again."</p>
+  <h3>What I changed after testing</h3>
+  <ul>
+    <li><strong>Payment status is now unmissable.</strong> A large Not paid yet / Paid block replaced the small chip, after one seller asked for "a big Paid/Not Paid indicator".</li>
+    <li><strong>The address moved up.</strong> It now sits right under the customer's name in bolder type, because sellers always double-check it.</li>
+    <li><strong>Every order shows what's left.</strong> A tracker runs Approved → Paid → Packed → Delivered, with the next step in plain words.</li>
+    <li><strong>A short "Start here" tip</strong> on the first screen, since one seller found it busy until she understood the layout.</li>
+  </ul>
+  <p style="color:var(--muted);font-size:15px">Three participants is a small sample, so I read these as strong signals rather than proof. Every participant said they would trust AI drafts only if they approve each one, which confirms the core principle.</p>
+</div></section>
+
+<section><div class="col">
+  <span class="label">Reflection</span>
+  <h2>The most valuable decision was what I took out</h2>
+  <ul>
+    <li><strong>Restraint beat features.</strong> Auto-replies and payment links looked impressive but clashed with how sellers want to work.</li>
+    <li><strong>AI needs a visible boundary.</strong> Its own colour and a clear draft-to-kept moment answer "can I trust this?"</li>
+    <li><strong>Design for the worst day.</strong> Designing for the rush sharpened every decision, from the sale mode bar to the pick list.</li>
+  </ul>
+  <p><strong>Next:</strong> custom draft fields for makers, like delivery date and flavour (the baker checked these most), then onboarding: connecting channels and importing products from photos.</p>
+</div></section>
+
+<div class="final">
+  <h2>Approve Riya's order yourself</h2>
+  <a class="btn solid" href="kept-app.html">Open the live prototype →</a>
+</div>
+
+<nav class="next" aria-label="More work"><a href="index.html#work">← All work</a><a href="onward.html">Next: Onward →</a></nav>
+<script>(function(){var h=location.hash&&document.getElementById(location.hash.slice(1));try{(h||document.body).scrollIntoView({block:"start"});}catch(e){}})();</script>
+</body>
+</html>

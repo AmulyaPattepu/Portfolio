@@ -1,0 +1,724 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Standing · Prototype by Amulya</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ground:#f6f5f1;--surface:#ffffff;--sunk:#edebe5;--line:#dedad2;--strong:#8c877d;--ink:#17161a;--muted:#5e5a63;
+  --plum:#5b2a6e;--on-plum:#ffffff;--plum-t:#f1e8f4;--amber:#8a5300;--amber-t:#fbf0da;--green:#1f6b3a;--green-t:#e3f3e8;
+  --scrim:rgba(23,22,26,.5);--desk:#e7e4dd;--bar:#17161a;--on-bar:#f6f5f1;
+  --font:'Hanken Grotesk',system-ui,-apple-system,'Segoe UI',sans-serif;color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --ground:#141316;--surface:#1d1c20;--sunk:#0f0e11;--line:#302e35;--strong:#8a8691;--ink:#f2f0ec;--muted:#aba6b2;
+  --plum:#d2a8e4;--on-plum:#1a0f20;--plum-t:#2e2036;--amber:#f2b861;--amber-t:#3a2a10;--green:#7dd49b;--green-t:#15301f;
+  --scrim:rgba(0,0,0,.6);--desk:#0b0a0c;--bar:#000000;--on-bar:#f2f0ec;color-scheme:dark}}
+:root[data-theme="dark"]{
+  --ground:#141316;--surface:#1d1c20;--sunk:#0f0e11;--line:#302e35;--strong:#8a8691;--ink:#f2f0ec;--muted:#aba6b2;
+  --plum:#d2a8e4;--on-plum:#1a0f20;--plum-t:#2e2036;--amber:#f2b861;--amber-t:#3a2a10;--green:#7dd49b;--green-t:#15301f;
+  --scrim:rgba(0,0,0,.6);--desk:#0b0a0c;--bar:#000000;--on-bar:#f2f0ec;color-scheme:dark}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--desk);color:var(--ink);font:16px/24px var(--font);font-variant-numeric:tabular-nums;-webkit-font-smoothing:antialiased;display:flex;flex-direction:column}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--plum);outline-offset:2px}
+a{color:var(--plum)}
+h1,h2,h3,p{margin:0}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.muted{color:var(--muted)}
+.sm{font-size:14px;line-height:20px;color:var(--muted)}
+.label{font-size:12px;line-height:16px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+
+.demo{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;padding:8px 16px;padding-top:calc(8px + env(safe-area-inset-top,0px));background:#17161a;color:#f6f5f1;font-size:14px;line-height:20px}
+.demo .sp{flex:1}
+.demo a{color:#f6f5f1;font-weight:700;display:inline-flex;align-items:center;min-height:40px}
+.demo button.pill{background:transparent;border:1px solid #f6f5f1;color:#f6f5f1;border-radius:999px;padding:0 14px;min-height:36px;font-size:13px}
+.demo .seg{display:inline-flex;border:1px solid #6e6a75;border-radius:999px;padding:3px;gap:2px}
+.demo .seg button{border:0;background:transparent;color:#d9d5df;border-radius:999px;min-height:30px;padding:0 12px;font-size:13px;font-weight:600}
+.demo .seg button[aria-pressed="true"]{background:#f6f5f1;color:#17161a}
+.demo .today{display:inline-flex;align-items:center;gap:8px;font-size:13px}
+.demo .today strong{font-weight:700}
+.demo .short,.demo .ico{display:none}
+.demo button.pill{display:inline-flex;align-items:center;justify-content:center}
+
+.stage{flex:1;display:flex;gap:56px;align-items:center;justify-content:center;padding:28px 24px;min-height:0}
+.stage[hidden]{display:none}
+.guide{width:340px;display:flex;flex-direction:column;gap:16px}
+.guide h2{font-size:30px;line-height:36px;font-weight:700;letter-spacing:-.01em}
+.guide ol{margin:0;padding-left:22px;display:flex;flex-direction:column;gap:6px}
+.jumps{display:flex;flex-wrap:wrap;gap:8px}
+.jumps button{min-height:40px;padding:0 14px;border-radius:999px;border:1.5px solid var(--strong);background:var(--surface);font-size:14px;font-weight:600}
+.jumps button:hover{border-color:var(--ink)}
+
+.phone{position:relative;width:410px;height:min(844px,calc(100dvh - 120px));min-height:600px;border-radius:44px;overflow:hidden;background:var(--ground);border:10px solid #0b0a0c;box-shadow:0 20px 60px rgba(0,0,0,.22);flex-shrink:0;display:flex;flex-direction:column}
+.screen{flex:1;display:flex;flex-direction:column;min-height:0}
+.scroll{flex:1;overflow-y:auto;overflow-x:hidden;display:flex;flex-direction:column;gap:10px;padding:4px 16px 16px;min-height:0;overscroll-behavior:contain}
+.scroll>*,.sheet>*{flex-shrink:0}
+
+.hdr{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;padding:14px 16px 8px}
+.hdr h1{font-size:30px;line-height:36px;font-weight:700;letter-spacing:-.01em}
+.round{width:44px;height:44px;border-radius:999px;border:1.5px solid var(--strong);background:var(--surface);color:var(--ink);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.round:hover{border-color:var(--ink)}
+.top{display:flex;align-items:center;padding:10px 8px 0}
+.back{display:inline-flex;align-items:center;gap:2px;min-height:44px;padding:0 8px;border-radius:10px;border:0;background:transparent;color:var(--ink);font-weight:500}
+.back:hover{background:var(--sunk)}
+
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:10px}
+.week{padding:12px 16px;gap:6px}
+.week .grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}
+.week .grid div{display:flex;flex-direction:column}
+.week .grid div+div{border-left:1px solid var(--line);padding-left:12px}
+.week b{font-size:22px;line-height:28px;font-weight:700}
+
+.segm{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px;padding:4px;border-radius:999px;background:var(--sunk)}
+.segm button{min-height:40px;border-radius:999px;border:0;background:transparent;display:flex;align-items:center;justify-content:center;gap:6px;font-size:14px;font-weight:500;color:var(--ink)}
+.segm button[aria-pressed="true"]{background:var(--surface);font-weight:600;box-shadow:0 1px 2px rgba(23,22,26,.12)}
+.segm span{color:var(--muted);font-weight:500}
+
+.app{display:flex;gap:12px;align-items:flex-start;padding:12px 14px;border-radius:12px;background:var(--surface);border:1px solid var(--line);width:100%;text-align:left;color:var(--ink)}
+.app:hover{border-color:var(--strong)}
+.app .tx{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px}
+.app .role{font-weight:600}
+.app .meta{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;margin-top:2px}
+.app .go{color:var(--muted);align-self:center;display:flex}
+.app .dot{width:8px;height:8px;border-radius:999px;background:var(--plum);display:inline-block;margin-left:6px;vertical-align:middle}
+.mono{flex-shrink:0;width:44px;height:44px;border-radius:12px;background:var(--sunk);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:18px;color:var(--ink)}
+.mono.lg{width:52px;height:52px;font-size:22px}
+.group-h{display:flex;justify-content:space-between;margin:6px 2px 0}
+
+.chip{display:inline-flex;align-items:center;font-size:13px;line-height:16px;font-weight:600;border-radius:6px;white-space:nowrap;padding:4px 10px}
+.chip.waiting{border:1px solid var(--strong);color:var(--muted);padding:3px 9px}
+.chip.active{background:var(--plum-t);color:var(--plum)}
+.chip.considered{background:var(--amber-t);color:var(--amber)}
+.chip.offer{background:var(--green-t);color:var(--green)}
+.chip.closed{background:var(--sunk);color:var(--ink)}
+.chip.likely{border:1px dashed var(--strong);color:var(--muted);padding:3px 9px}
+
+.mini{position:relative;display:block;height:6px;border-radius:999px;background:var(--sunk);margin-top:6px}
+.rw{display:flex;flex-direction:column;gap:6px}
+.track{position:relative;height:10px;border-radius:999px;background:var(--sunk)}
+.band{position:absolute;top:0;bottom:0;background:var(--plum-t);border-left:2px solid var(--plum);border-right:2px solid var(--plum)}
+.fill{position:absolute;left:0;top:0;bottom:0;border-radius:999px;background:var(--ink)}
+.mark{position:absolute;top:-5px;width:4px;height:20px;margin-left:-2px;border-radius:2px;background:var(--ink);box-shadow:0 0 0 2px var(--surface)}
+.scale{position:relative;height:16px;font-size:12px;line-height:16px;color:var(--muted)}
+.scale span{position:absolute;transform:translateX(-50%)}
+.scale .l{left:0;transform:none}.scale .r{right:0;transform:none}
+
+.datetile{width:64px;border-radius:12px;overflow:hidden;border:1px solid var(--line);background:var(--surface);text-align:center;flex-shrink:0;display:flex;flex-direction:column}
+.datetile .m{background:var(--amber-t);color:var(--amber);font-size:11px;line-height:20px;font-weight:700;letter-spacing:.08em}
+.datetile .d{font-size:28px;line-height:32px;font-weight:700;padding-top:2px}
+.datetile .w{font-size:12px;line-height:16px;color:var(--muted);padding-bottom:6px}
+
+.tl{margin:0;padding:0;list-style:none;display:flex;flex-direction:column}
+.tl li{display:flex;gap:12px;min-height:44px}
+.tl li:last-child{min-height:32px}
+.tl .rail{display:flex;flex-direction:column;align-items:center;width:16px;flex-shrink:0}
+.tl .dot{width:16px;height:16px;border-radius:999px;margin-top:4px;display:flex;align-items:center;justify-content:center;color:var(--surface);background:var(--surface);border:2px solid var(--strong)}
+.tl .done .dot{background:var(--ink);border-color:var(--ink)}
+.tl .now .dot{border:4px solid var(--plum)}
+.tl .line{flex:1;width:2px;background:var(--line);margin:2px 0}
+.tl .done .line{background:var(--ink)}
+.tl .t{display:flex;flex-direction:column;padding-bottom:8px}
+.tl .todo .name{color:var(--muted);font-weight:400}
+.tl .name{font-weight:600}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:0 18px;border-radius:12px;font-weight:600;text-decoration:none;border:1.5px solid var(--strong);background:var(--surface);color:var(--ink)}
+.btn:hover{border-color:var(--ink)}
+.btn.primary{background:var(--plum);border-color:var(--plum);color:var(--on-plum)}
+.btn.primary:hover{filter:brightness(1.08)}
+.btn.block{width:100%}
+.btn.quiet{border-color:transparent;background:transparent;color:var(--plum);min-height:44px;padding:0 6px}
+.btn.locked{border-style:dashed;background:transparent;color:var(--muted);cursor:not-allowed}
+.btn.sm{min-height:40px;font-size:14px;padding:0 14px}
+.note{display:flex;gap:12px;background:var(--sunk);border-radius:12px;padding:14px 16px}
+.amberbar{display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:10px;background:var(--amber-t);color:var(--amber);font-size:14px;line-height:20px;font-weight:600}
+.okbar{display:flex;align-items:flex-start;gap:8px;padding:10px 12px;border-radius:10px;background:var(--plum-t);color:var(--plum);font-size:14px;line-height:20px;font-weight:600}
+.nextstep{display:flex;gap:12px;align-items:flex-start;padding:12px 14px;border-radius:12px;background:var(--plum-t)}
+.nextstep>svg{color:var(--plum);flex-shrink:0;margin-top:2px}
+.nextstep .label{color:var(--plum)}
+.nextstep strong{display:block;font-weight:700}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12px;line-height:16px;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend .lb{width:16px;height:10px;border-radius:3px;background:var(--plum-t);border-left:2px solid var(--plum);border-right:2px solid var(--plum)}
+.legend .lm{width:4px;height:14px;border-radius:2px;background:var(--ink)}
+.live{width:10px;height:10px;border-radius:999px;background:var(--green);flex-shrink:0}
+
+.nav{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));border-top:1px solid var(--line);background:var(--surface);padding:6px 4px 22px}
+.nav button{display:flex;flex-direction:column;align-items:center;gap:2px;min-height:48px;justify-content:center;border:0;background:transparent;font-size:11px;line-height:14px;font-weight:500;color:var(--muted)}
+.nav button[aria-current="page"]{color:var(--plum);font-weight:700}
+
+.sheet-wrap{position:absolute;inset:0;background:var(--scrim);display:flex;align-items:flex-end;z-index:5}
+.sheet-wrap[hidden]{display:none}
+.sheet{width:100%;background:var(--surface);border-radius:20px 20px 0 0;padding:10px 16px 24px;display:flex;flex-direction:column;gap:14px;max-height:92%;overflow-y:auto;box-shadow:0 -8px 24px rgba(23,22,26,.18)}
+.grab{align-self:center;width:40px;height:5px;border-radius:999px;background:var(--line)}
+.sheet h2{font-size:24px;line-height:30px;font-weight:700}
+.sheet-h{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.field{display:flex;flex-direction:column;gap:6px}
+.field[hidden]{display:none}
+.card>.chip{align-self:flex-start}
+.amberbar svg,.okbar svg,.replytime svg{flex-shrink:0}
+.field>span{font-size:14px;font-weight:600}
+.field input,.field textarea,.field select{min-height:48px;border-radius:12px;border:1.5px solid var(--strong);background:var(--surface);padding:10px 14px;line-height:24px}
+.field textarea{resize:none}
+.field input[aria-invalid="true"]{border-color:var(--amber)}
+.err{color:var(--amber);font-size:14px;line-height:20px;font-weight:600;min-height:0}
+.choice{display:flex;gap:12px;align-items:center;padding:12px 14px;border-radius:12px;border:1px solid var(--line);background:var(--surface);text-align:left;width:100%}
+.choice:hover{border-color:var(--strong)}
+.person{display:flex;gap:12px;align-items:center}
+.avatar{width:40px;height:40px;border-radius:999px;background:var(--plum-t);color:var(--plum);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;flex-shrink:0}
+
+.toast{position:absolute;left:16px;right:16px;bottom:96px;background:var(--ink);color:var(--ground);padding:12px 14px;border-radius:12px;font-size:15px;line-height:21px;z-index:6;box-shadow:0 8px 24px rgba(0,0,0,.25)}
+.toast[hidden]{display:none}
+
+/* recruiter */
+.rec{flex:1;display:flex;min-height:0;background:var(--ground)}
+.rec[hidden]{display:none}
+.side{width:240px;flex-shrink:0;border-right:1px solid var(--line);background:var(--surface);padding:24px 16px;display:flex;flex-direction:column;gap:4px}
+.side .brand{font-size:18px;font-weight:700;padding:0 12px 20px}
+.side a{min-height:44px;display:flex;align-items:center;gap:10px;padding:0 12px;border-radius:10px;text-decoration:none;color:var(--ink);font-weight:500}
+.side a[aria-current="page"]{background:var(--plum-t);color:var(--plum);font-weight:600}
+.rmain{flex:1;min-width:0;display:flex;flex-direction:column;position:relative}
+.rhead{padding:24px 32px 0;display:flex;flex-direction:column;gap:8px;border-bottom:1px solid var(--line);background:var(--surface)}
+.rhead h1{font-size:30px;line-height:36px;font-weight:700;letter-spacing:-.01em}
+.rrow{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap}
+.replytime{display:flex;gap:12px;align-items:center;padding:12px 16px;border-radius:12px;background:var(--plum-t)}
+.replytime svg{color:var(--plum)}
+.rtabs{display:flex;gap:28px;margin-top:8px;overflow-x:auto;position:relative;scrollbar-width:none}
+.rtabs button{min-height:44px;display:flex;align-items:center;gap:6px;border:0;background:transparent;font-size:15px;font-weight:500;color:var(--ink);white-space:nowrap;padding:0}
+.rtabs button[aria-pressed="true"]{font-weight:600;box-shadow:inset 0 -3px 0 var(--plum)}
+.rtabs span{color:var(--muted)}
+.rbody{flex:1;min-height:0;overflow:auto;padding:20px 32px;display:flex;flex-direction:column;gap:14px}
+.rtools{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.rtools label{display:flex;align-items:center;gap:10px;font-weight:600;min-height:44px}
+input[type=checkbox],input[type=radio]{width:20px;height:20px;margin:0;accent-color:var(--plum)}
+.tbl{width:100%;border-collapse:separate;border-spacing:0;background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow:hidden;font-size:15px}
+.tbl th{text-align:left;font-size:12px;line-height:16px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding:12px 16px;border-bottom:1px solid var(--line)}
+.tbl td{padding:10px 16px;border-bottom:1px solid var(--line);vertical-align:middle}
+.tbl tr:last-child td{border-bottom:0}
+.who{display:flex;gap:12px;align-items:center}
+.ini{width:36px;height:36px;border-radius:999px;background:var(--sunk);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0}
+.rfoot{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 32px;background:var(--bar);color:var(--on-bar);flex-wrap:wrap}
+.rfoot[hidden]{display:none}
+.rfoot .btn{min-height:44px}
+.rfoot .ghost{background:transparent;border-color:#8a8691;color:var(--on-bar)}
+.rfoot .solid{background:var(--on-bar);border-color:var(--on-bar);color:var(--bar)}
+.empty{padding:28px;text-align:center;color:var(--muted);background:var(--surface);border:1px dashed var(--line);border-radius:12px}
+.modal-wrap{position:fixed;inset:0;background:var(--scrim);display:flex;align-items:center;justify-content:center;padding:24px;z-index:20}
+.modal-wrap[hidden]{display:none}
+.modal{width:min(680px,100%);max-height:100%;overflow:auto;background:var(--surface);border-radius:20px;padding:28px;display:flex;flex-direction:column;gap:16px;box-shadow:0 24px 48px rgba(23,22,26,.24)}
+.modal h2{font-size:24px;line-height:30px;font-weight:700}
+.opts{border:0;margin:0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.opts legend{font-size:14px;font-weight:600;margin-bottom:8px}
+.opt{display:flex;gap:12px;align-items:flex-start;padding:12px 14px;border-radius:12px;border:1px solid var(--line);cursor:pointer}
+.opt:has(input:checked){border:2px solid var(--plum);background:var(--plum-t);padding:11px 13px}
+.opt input{margin-top:2px}
+.preview{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:12px 14px;border-radius:12px;background:var(--ground)}
+.rtoast{position:fixed;left:50%;bottom:88px;transform:translateX(-50%);background:var(--ink);color:var(--ground);padding:12px 16px;border-radius:12px;font-size:15px;z-index:30;box-shadow:0 8px 24px rgba(0,0,0,.25);width:max-content;max-width:calc(100% - 32px)}
+.rtoast[hidden]{display:none}
+
+@media (max-width:900px){
+  .guide{display:none}
+  .side{display:none}
+  .rhead,.rbody{padding-left:16px;padding-right:16px}
+  .rfoot{padding:12px 16px}
+  .tbl .hide-s{display:none}
+  .opts{grid-template-columns:minmax(0,1fr)}
+}
+@media (max-width:600px){
+  body{background:var(--ground)}
+  .demo{gap:8px 10px}
+  .demo strong.title,.demo .sp,.demo .long{display:none}
+  .demo .short{display:inline}
+  .demo .ico{display:block}
+  .demo button.ip{width:40px;min-height:40px;padding:0}
+  .demo .seg{order:-2}.demo .ip{order:-1}
+  .demo .today{order:1}.demo a{order:2;margin-left:auto}
+  .stage{padding:0;display:flex;flex-direction:column;align-items:stretch}
+  .phone{width:100%;height:auto;flex:1;min-height:0;border:0;border-radius:0;box-shadow:none}
+  .nav{padding-bottom:calc(14px + env(safe-area-inset-bottom,0px))}
+  .rhead h1{font-size:24px;line-height:30px}
+  .modal{padding:20px}
+  .tbl td,.tbl th{padding:10px 12px}
+  .rmain{overflow-y:auto}
+  .rbody{flex:none;overflow:visible}
+  .rfoot{position:sticky;bottom:0;margin-top:auto}
+}
+@media (max-height:700px) and (min-width:601px){.phone{min-height:0;height:calc(100dvh - 90px)}}
+</style>
+</head>
+<body>
+<div class="demo" role="note">
+  <strong class="title">Interactive prototype</strong>
+  <div class="seg" role="group" aria-label="View">
+    <button type="button" data-act="mode" data-to="candidate" aria-pressed="true">Candidate</button>
+    <button type="button" data-act="mode" data-to="recruiter" aria-pressed="false">Recruiter</button>
+  </div>
+  <span class="today">Today: <strong id="today">Thu 1 Oct</strong> <button type="button" class="pill" data-act="skip">Skip a day</button></span>
+  <span class="sp"></span>
+  <button type="button" class="pill ip" data-act="theme" aria-label="Dark mode"><svg class="ico" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg><span class="long">Dark mode</span></button>
+  <button type="button" class="pill ip" data-act="reset" aria-label="Reset demo"><svg class="ico" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg><span class="long">Reset demo</span></button>
+  <a href="standing.html"><span class="long">Back to case study</span><span class="short">Case study</span></a>
+</div>
+
+<div class="stage" id="stage">
+  <aside class="guide" aria-labelledby="g-h">
+    <span class="label">Standing · Jordan's applications</span>
+    <h2 id="g-h">48 applications. Where does he stand?</h2>
+    <p class="muted">Sample data for a software engineer in the US. Nothing is sent to anyone.</p>
+    <ol>
+      <li>Find the applications he can stop waiting on.</li>
+      <li>Open Tidewell: is it late yet?</li>
+      <li>Skip ahead past 9 Oct, then ask Quillmate for an update.</li>
+      <li>Add a job he applied for on a company site.</li>
+      <li>Halden finally replied: move it back.</li>
+      <li>Switch to Recruiter and close the loop for 140 people.</li>
+    </ol>
+    <span class="label">Jump to</span>
+    <div class="jumps">
+      <button type="button" data-act="jump" data-to="list">Applications</button>
+      <button type="button" data-act="open" data-to="tide">Tidewell</button>
+      <button type="button" data-act="open" data-to="quill">Quillmate</button>
+      <button type="button" data-act="tab" data-to="closed">Closed</button>
+      <button type="button" data-act="mode" data-to="recruiter">Recruiter view</button>
+    </div>
+  </aside>
+  <div class="phone" id="phone">
+    <main class="screen" id="screen"></main>
+    <div class="sheet-wrap" id="sheet" hidden></div>
+    <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+  </div>
+</div>
+
+<div class="rec" id="rec" hidden>
+  <aside class="side" aria-label="Hiring">
+    <span class="brand">Hiring</span>
+    <a href="#rec" aria-current="page" data-act="noop"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2M3 13h18"/></svg>Jobs</a>
+    <a href="#rec" data-act="noop"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0M16 4.5a3.5 3.5 0 0 1 0 7M18 14.5a6 6 0 0 1 3.5 5.5"/></svg>Candidates</a>
+    <a href="#rec" data-act="noop"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Messages</a>
+    <a href="#rec" data-act="noop"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-6M22 20H2"/></svg>Reports</a>
+  </aside>
+  <div class="rmain" id="rmain"></div>
+</div>
+
+<script>
+(function(){
+const S = (p, s = 22, w = 2) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${p}</svg>`;
+const I = {
+  home:'<path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>',
+  users:'<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0M16 4.5a3.5 3.5 0 0 1 0 7M18 14.5a6 6 0 0 1 3.5 5.5"/>',
+  briefcase:'<rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2M3 13h18"/>',
+  message:'<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>',
+  user:'<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>',
+  plus:'<path d="M12 5v14M5 12h14"/>', back:'<path d="M15 18l-6-6 6-6"/>', chev:'<path d="M9 18l6-6-6-6"/>', check:'<path d="M20 6 9 17l-5-5"/>',
+  clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>', bell:'<path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>',
+  lock:'<rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>', info:'<circle cx="12" cy="12" r="9"/><path d="M12 16v-4M12 8h.01"/>',
+  send:'<path d="m22 2-7 20-4-9-9-4z"/><path d="M22 2 11 13"/>', x:'<path d="M18 6 6 18M6 6l12 12"/>', calendar:'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>',
+  external:'<path d="M14 3h7v7M10 14 21 3M21 14v5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5"/>', search:'<circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/>',
+  filter:'<path d="M3 5h18l-7 9v6l-4-2v-4z"/>', mail:'<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/>'
+};
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const WD = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+const WDL = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+const MONL = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+const BASE = Date.UTC(2026, 8, 30) / 864e5 + 1; // 1 Oct 2026, as a day number
+const dn = iso => Date.UTC(+iso.slice(0, 4), +iso.slice(5, 7) - 1, +iso.slice(8, 10)) / 864e5;
+const dt = n => new Date(n * 864e5);
+const short = n => { const d = dt(n); return `${d.getUTCDate()} ${MON[d.getUTCMonth()]}`; };
+const wshort = n => { const d = dt(n); return `${WD[d.getUTCDay()]} ${d.getUTCDate()} ${MON[d.getUTCMonth()]}`; };
+const longd = n => { const d = dt(n); return `${WDL[d.getUTCDay()]} ${d.getUTCDate()} ${MONL[d.getUTCMonth()]}`; };
+
+const WAIT_CO = [['Brightloom','Backend Engineer','Remote (US)','09-21',7,10],['Cobalt Rail','Software Engineer','Chicago, IL','09-22',5,8],['Driftwood Health','Full-stack Engineer','Remote (US)','09-23',10,14],
+  ['Emberly','Backend Engineer','Denver, CO','09-24',7,10],['Foxglove Data','Software Engineer II','Remote (US)','09-24',5,9],['Granite Pay','Backend Engineer','New York, NY','09-25',6,9],
+  ['Harbor & Pine','Full-stack Engineer','Boston, MA','09-26',8,12],['Inkwell Labs','Platform Engineer','Remote (US)','09-26',7,10],['Juniper Cloud','Backend Engineer','Seattle, WA','09-27',5,8],
+  ['Kestrel Learning','Software Engineer','Remote (US)','09-28',7,11],['Lumen Freight','Backend Engineer','Austin, TX','09-29',6,10],['Meadowlark','Full-stack Engineer','Remote (US)','09-29',4,7]];
+const LIKELY_CO = [['Halden & Co.','Backend Developer','09-07',5,8],['Vesper Analytics','Software Engineer','09-10',4,7],['Wren Robotics','Backend Engineer','09-12',5,7],['Yarrow Health','Platform Engineer','09-13',4,7],
+  ['Zephyr Retail','Software Engineer II','08-20',7,10],['Alder Systems','Backend Engineer','08-22',5,8],['Birchway','Full-stack Engineer','08-24',6,9],['Cinder Labs','Backend Engineer','08-25',5,8],
+  ['Dunmore Bank','Software Engineer','08-27',7,10],['Elmstead','Backend Engineer','08-28',4,6],['Fable & Co.','Full-stack Engineer','08-29',5,8],['Glasswing Data','Software Engineer','08-30',6,9],
+  ['Hollis Media','Backend Engineer','08-31',5,7],['Ivory Lane','Platform Engineer','09-01',4,7],['Jasper Fleet','Software Engineer','09-02',5,8],['Kiln Studio','Backend Engineer','09-03',4,6],
+  ['Loam Energy','Software Engineer','09-03',5,7],['Marlow Travel','Backend Engineer','09-04',4,6],['Nimbus Pay','Full-stack Engineer','09-05',4,6],['Osprey Grid','Software Engineer','09-05',5,7]];
+const CLEAR_CO = [['Brightfern','Product Engineer','closed','Not moving forward','09-30'],['Oakhurst','Software Engineer II','closed','Position filled','09-26'],['Pinecrest','Backend Engineer','closed','Not moving forward','09-24'],
+  ['Quarry Labs','Software Engineer','closed','Position filled','09-22'],['Redwing Health','Backend Engineer','closed','Not moving forward','09-21'],['Sable Systems','Platform Engineer','closed','Not moving forward','09-18'],
+  ['Tamarind','Full-stack Engineer','closed','Not moving forward','09-17'],['Umber Analytics','Backend Engineer','closed','Position filled','09-15'],['Verdant Cloud','Software Engineer','closed','Not moving forward','09-11']];
+
+function fresh(){
+  const apps = [
+    {id:'quill', co:'Quillmate', role:'Backend Engineer', loc:'Austin, TX (hybrid)', src:'Easy Apply', status:'considered', applied:dn('2026-09-14'), viewed:dn('2026-09-16'), interview:[dn('2026-09-22'), dn('2026-09-30')], rounds:3, since:dn('2026-09-30'), decision:dn('2026-10-09'), recruiter:'Sam Ortiz', ini:'SO', unread:true},
+    {id:'tide', co:'Tidewell', role:'Senior Software Engineer', loc:'Remote (US)', src:'Easy Apply', status:'review', applied:dn('2026-09-25'), viewed:dn('2026-09-27'), since:dn('2026-09-29'), lo:7, hi:10},
+    {id:'larch', co:'Larchmont Labs', role:'Full-stack Engineer', loc:'New York, NY', src:'Company site', status:'interviewing', applied:dn('2026-09-12'), viewed:dn('2026-09-15'), since:dn('2026-09-24'), round2:dn('2026-10-06')},
+    {id:'okapi', co:'Okapi Freight', role:'Platform Engineer', loc:'Remote (US)', src:'Easy Apply', status:'viewed', applied:dn('2026-09-24'), viewed:dn('2026-09-29'), lo:5, hi:8},
+    {id:'fern', co:'Fernway', role:'Backend Engineer II', loc:'Portland, OR', src:'Easy Apply', status:'viewed', applied:dn('2026-09-22'), viewed:dn('2026-09-30'), lo:10, hi:14}
+  ];
+  WAIT_CO.forEach((w, i) => apps.push({id:'w' + i, co:w[0], role:w[1], loc:w[2], src: i % 3 === 1 ? 'Company site' : 'Easy Apply', status:'applied', applied:dn('2026-' + w[3]), lo:w[4], hi:w[5]}));
+  apps.push({id:'out1', co:'Northbeam', role:'Backend Engineer', loc:'Remote (US)', src:'Company site', status:'applied', applied:dn('2026-09-28'), manual:true});
+  apps.push({id:'out2', co:'Orchard Systems', role:'Software Engineer', loc:'San Diego, CA', src:'Company site', status:'applied', applied:dn('2026-09-30'), manual:true});
+  LIKELY_CO.forEach((w, i) => apps.push({id:'l' + i, co:w[0], role:w[1], loc:'Remote (US)', src:'Easy Apply', status:'applied', applied:dn('2026-' + w[2]), lo:w[3], hi:w[4]}));
+  CLEAR_CO.forEach((w, i) => apps.push({id:'c' + i, co:w[0], role:w[1], loc:'Remote (US)', src:'Easy Apply', status:'closed', outcome:w[3], decided:dn('2026-' + w[4]), applied:dn('2026-' + w[4]) - 18, unread: i === 0}));
+  return {mode:'candidate', offset:0, screen:'list', tab:'progress', open:null, stack:[], apps, nextId:1,
+    rec:{tab:'reviewed', counts:{awaiting:38, reviewed:140, shortlisted:6, considered:2, answered:0}, all:false, off:new Set(), on:new Set(), gone:new Set(), sent:{}, sbc:[]}};
+}
+let st = fresh();
+const today = () => BASE + st.offset;
+const dayOf = a => today() - a.applied;
+const likely = a => a.status === 'applied' && !a.manual && dayOf(a) > 2 * a.hi;
+const group = a => a.status === 'closed' || likely(a) ? 'closed' : a.status === 'applied' ? 'waiting' : 'progress';
+const byGroup = g => st.apps.filter(a => group(a) === g);
+const find = id => st.apps.find(a => a.id === id);
+const letter = a => a.co.trim()[0].toUpperCase();
+
+const $screen = document.getElementById('screen'), $sheet = document.getElementById('sheet'), $toast = document.getElementById('toast'), $rmain = document.getElementById('rmain');
+let tt;
+function toast(msg, rec){ const t = rec ? document.getElementById('rtoast') : $toast; if (!t) return; t.textContent = msg; t.hidden = false; clearTimeout(tt); tt = setTimeout(() => { t.hidden = true; }, 3400); }
+
+function chip(a){
+  if (a.status === 'closed') return a.outcome === 'Offer' ? `<span class="chip offer">Offer</span>` : `<span class="chip closed">${a.outcome}</span>`;
+  if (likely(a)) return `<span class="chip likely">Likely closed</span>`;
+  return {considered:'<span class="chip considered">Still being considered</span>', review:'<span class="chip active">In review</span>', interviewing:'<span class="chip active">Interviewing</span>', viewed:'<span class="chip active">Viewed</span>', applied:'<span class="chip waiting">Applied</span>'}[a.status];
+}
+function note(a){
+  const d = dayOf(a);
+  if (a.status === 'closed') return short(a.decided);
+  if (likely(a)) return `No reply in ${d} days`;
+  if (a.status === 'considered') return today() > a.decision ? `Decision date passed (${short(a.decision)})` : `Decision by ${wshort(a.decision)}`;
+  if (a.status === 'interviewing') return a.round2 ? (today() < a.round2 ? `Round 2 on ${wshort(a.round2)}` : 'Waiting to hear after round 2') : a.manual ? 'Interview invite · you update this one' : 'Interview invite';
+  if (a.manual) return `Applied ${short(a.applied)} · you update this one`;
+  if (a.status === 'viewed') return `Viewed ${short(a.viewed)} · usually ${a.lo}–${a.hi} days`;
+  if (d > a.hi) return `Day ${d}; usually ${a.lo}–${a.hi}`;
+  return `Day ${d} of a usual ${a.lo}–${a.hi}`;
+}
+const pct = (d, span) => Math.max(0, Math.min(100, d / span * 100)).toFixed(1);
+function mini(a){ const span = Math.max(14, a.hi + 4), d = dayOf(a);
+  return `<span class="mini" aria-hidden="true"><span class="band" style="left:${pct(a.lo, span)}%;width:${pct(a.hi - a.lo, span)}%"></span><span class="fill" style="width:${pct(d, span)}%"></span></span>`; }
+
+function appCard(a){
+  const showMini = (a.status === 'review' || a.status === 'applied') && !a.manual && !likely(a) && a.lo;
+  return `<li><button type="button" class="app" data-act="open" data-to="${a.id}"><span class="mono" aria-hidden="true">${esc(letter(a))}</span>
+    <span class="tx"><span class="role">${esc(a.role)}${a.unread ? '<span class="dot" aria-hidden="true"></span><span class="sr">, new update</span>' : ''}</span><span class="sm">${esc(a.co)} · ${esc(a.loc)}</span>
+    <span class="meta">${chip(a)}<span class="sm">${note(a)}</span></span>${showMini ? mini(a) : ''}</span><span class="go">${S(I.chev, 20)}</span></button></li>`;
+}
+
+function weekCard(){
+  const upd = st.apps.filter(a => a.unread).length;
+  const dates = st.apps.filter(a => a.status === 'considered' && a.decision >= today()).length;
+  const newly = st.apps.filter(a => likely(a) && today() - (a.applied + 2 * a.hi) <= 7).length;
+  return `<section class="card week" aria-label="Since your last visit"><span class="label">Since your last visit</span><div class="grid">
+    <div><b>${upd}</b><span class="sm">${upd === 1 ? 'update' : 'updates'}</span></div><div><b>${dates}</b><span class="sm">${dates === 1 ? 'decision date' : 'decision dates'}</span></div><div><b>${newly}</b><span class="sm">likely closed</span></div></div></section>`;
+}
+function segm(){
+  const t = [['progress','In progress'],['waiting','Waiting'],['closed','Closed']];
+  return `<div class="segm" role="group" aria-label="Application groups">${t.map(([k, l]) => `<button type="button" data-act="tab" data-to="${k}" aria-pressed="${st.tab === k}">${l}<span>${byGroup(k).length}</span></button>`).join('')}</div>`;
+}
+function nav(){
+  return `<nav class="nav" aria-label="Main">${[['Home','home'],['Network','users'],['Jobs','briefcase'],['Messages','message'],['Me','user']].map(([l, ic]) =>
+    `<button type="button" ${l === 'Jobs' ? 'aria-current="page"' : ''} data-act="${l === 'Jobs' ? 'jump' : 'navother'}" data-to="list">${S(I[ic], 22, l === 'Jobs' ? 2.2 : 1.8)}${l}</button>`).join('')}</nav>`;
+}
+
+function todo(a){
+  const d = dayOf(a);
+  let v, t;
+  if (a.status === 'closed') { if (a.outcome === 'Offer') { v = 'Reply to the offer.'; t = 'Congratulations. Everything else can wait.'; } else { v = 'Nothing to do. This one is over.'; t = 'It stays in Closed for your records.'; } }
+  else if (likely(a)) { v = 'Stop waiting.'; t = `No reply in ${d} days. If they get in touch, tap I heard back.`; }
+  else if (a.status === 'considered') {
+    if (a.replied) { v = 'Wait for the new date.'; t = `${esc(a.recruiter)} now expects to decide by ${wshort(a.decision)}.`; }
+    else if (a.asked) { v = 'Wait for a reply.'; t = `You asked on ${short(a.asked)}. ${esc(a.recruiter)} can answer in one tap.`; }
+    else if (today() > a.decision) { v = 'Follow up.'; t = `The decision date passed. Ask ${esc(a.recruiter.split(' ')[0])} for an update below.`; }
+    else { v = 'Wait for the decision.'; t = `Expected by ${wshort(a.decision)}. Nothing to do until then.`; }
+  }
+  else if (a.status === 'interviewing') {
+    if (a.round2 && today() < a.round2) { v = 'Prepare for round 2.'; t = `It's on ${wshort(a.round2)}.`; }
+    else if (a.round2) { v = 'Wait for their decision.'; t = 'Round 2 is done. You’ll see it here.'; }
+    else { v = 'Prepare for the interview.'; t = 'Then mark what happens below.'; }
+  }
+  else if (a.manual) { v = 'Wait, and mark it when you hear.'; t = 'We can’t see replies from company sites.'; }
+  else if (a.asked) { v = 'Wait for a reply.'; t = `You asked for an update on ${short(a.asked)}.`; }
+  else if (d > a.hi) { v = 'Follow up.'; t = `Day ${d}, past their usual ${a.lo}–${a.hi}. Ask for an update below.`; }
+  else { v = 'Wait. It isn’t late yet.'; t = `You can ask for an update from ${wshort(a.applied + a.hi + 1)}.`; }
+  return `<section class="nextstep" aria-label="What to do now">${S(I.clock, 20)}<span><span class="label">What to do now</span><strong>${v}</strong><span class="sm">${t}</span></span></section>`;
+}
+const screens = {
+  list(){
+    const items = byGroup(st.tab);
+    let body = '';
+    if (st.tab === 'closed'){
+      const clear = items.filter(a => a.status === 'closed').sort((a, b) => b.decided - a.decided);
+      const lk = items.filter(a => a.status !== 'closed').sort((a, b) => b.applied - a.applied);
+      body = `<h2 class="group-h label"><span>Clear answers</span><span>${clear.length}</span></h2><ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px">${clear.map(appCard).join('')}</ul>
+        <h2 class="group-h label"><span>Likely closed</span><span>${lk.length}</span></h2><ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px">${lk.map(appCard).join('')}</ul>
+        <div class="sm" style="display:flex;gap:10px"><span style="flex-shrink:0;margin-top:1px">${S(I.info, 18)}</span><span>Likely closed means no reply long after this employer usually answers. If they get in touch, it moves back.</span></div>`;
+    } else {
+      const sorted = st.tab === 'progress' ? items.sort((a, b) => (b.unread ? 1 : 0) - (a.unread ? 1 : 0) || ['considered','interviewing','review','viewed'].indexOf(a.status) - ['considered','interviewing','review','viewed'].indexOf(b.status)) : items.sort((a, b) => b.applied - a.applied);
+      body = sorted.length ? `<ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px">${sorted.map(appCard).join('')}</ul>` : `<div class="card sm">Nothing here right now.</div>`;
+      if (st.tab === 'waiting') body = `<p class="sm" style="padding:0 2px">Applications with no reply yet, inside or near their employer's usual reply window.</p>` + body;
+    }
+    return `<header class="hdr"><div><h1 tabindex="-1">Applications</h1><span class="sm">${st.apps.length} this month</span></div>
+      <button type="button" class="round" data-act="add" aria-label="Add an outside application">${S(I.plus, 22)}</button></header>
+      <div class="scroll">${weekCard()}${segm()}${body}</div>${nav()}`;
+  },
+  detail(){
+    const a = find(st.open);
+    const d = dayOf(a);
+    let status = '';
+    if (a.status === 'closed'){
+      status = `<section class="card" aria-label="Status">${chip(a)}<strong style="font-size:18px;line-height:24px">${a.outcome === 'Offer' ? 'You have an offer' : a.outcome === 'Position filled' ? 'This role has been filled' : 'They won’t be moving forward'}</strong><span class="sm">${a.outcome === 'Offer' ? 'Congratulations.' : 'A clear answer, on ' + longd(a.decided) + '. It’s in your Closed list, not your active one.'}</span></section>`;
+    } else if (likely(a)){
+      status = `<section class="card" aria-label="Status">${chip(a)}<strong style="font-size:18px;line-height:24px">No reply in ${d} days</strong><span class="sm">${esc(a.co)} usually replies in ${a.lo}–${a.hi} days, so this is likely closed. If they get in touch, tell us and it moves back.</span>
+        <button type="button" class="btn quiet" data-act="heard" data-to="${a.id}" style="align-self:flex-start">I heard back</button></section>`;
+    } else if (a.status === 'considered'){
+      const passed = today() > a.decision;
+      const dd = dt(a.decision);
+      status = `<section class="card" aria-label="Status">${chip(a)}<div style="display:flex;gap:14px;align-items:center"><span class="datetile" aria-hidden="true"><span class="m">${MON[dd.getUTCMonth()].toUpperCase()}</span><span class="d">${dd.getUTCDate()}</span><span class="w">${WD[dd.getUTCDay()]}</span></span>
+        <div style="display:flex;flex-direction:column;gap:2px"><strong style="font-size:18px;line-height:24px">Decision expected by ${longd(a.decision)}</strong><span class="sm">Set by ${esc(a.recruiter)}, recruiter, after your final interview on ${short(a.since)}</span></div></div>
+        ${passed && !a.asked ? `<div class="amberbar">${S(I.calendar, 18)}The decision date has passed</div>` : ''}${a.asked ? `<div class="okbar">${S(I.check, 18)}<span>${a.replied ? esc(a.replied) : `You asked for an update on ${short(a.asked)}. ${esc(a.recruiter)} can answer in one tap.`}</span></div>` : ''}</section>`;
+    } else if (a.status === 'interviewing'){
+      status = `<section class="card" aria-label="Status">${chip(a)}<strong style="font-size:18px;line-height:24px">${a.round2 ? (today() < a.round2 ? 'Round 2 on ' + longd(a.round2) : 'Round 2 done. Waiting to hear.') : 'You have an interview invite'}</strong><span class="sm">${a.manual ? `Since ${short(a.since)}. We can't see ${esc(a.co)}'s replies here, so mark what happens next.` : `Interviewing since ${short(a.since)}. When they decide, you'll see it here.`}</span>${a.manual ? `<div style="display:flex;gap:8px;flex-wrap:wrap"><button type="button" class="btn sm" data-act="manual" data-to="${a.id}|offer">Got an offer</button><button type="button" class="btn sm" data-act="manual" data-to="${a.id}|closed">They said no</button></div>` : ''}</section>`;
+    } else if (a.manual){
+      status = `<section class="card" aria-label="Status">${chip(a)}<strong style="font-size:18px;line-height:24px">You update this one</strong><span class="sm">You applied on ${esc(a.co)}'s own site, so we can't see their replies. Mark what happens here.</span>
+        <div style="display:flex;gap:8px;flex-wrap:wrap"><button type="button" class="btn sm" data-act="manual" data-to="${a.id}|interviewing">Got an interview</button><button type="button" class="btn sm" data-act="manual" data-to="${a.id}|closed">They said no</button></div></section>`;
+    } else {
+      const span = Math.max(14, a.hi + 4), late = d > a.hi;
+      status = `<section class="card" aria-label="Status" style="gap:12px"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px">${chip(a)}<span class="sm">${a.status === 'applied' ? 'No reply yet' : 'Updated ' + short(a.since || a.viewed)}</span></div>
+        <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px"><strong style="font-size:18px;line-height:24px">Usually replies in ${a.lo}–${a.hi} days</strong><strong style="white-space:nowrap">Day ${d}</strong></div>
+        <div class="rw" role="img" aria-label="Day ${d}. ${esc(a.co)} usually replies between day ${a.lo} and day ${a.hi}."><div class="track"><span class="band" style="left:${pct(a.lo, span)}%;width:${pct(a.hi - a.lo, span)}%"></span><span class="fill" style="width:${pct(d, span)}%"></span><span class="mark" style="left:${pct(d, span)}%"></span></div>
+        <div class="scale"><span class="l">Applied</span><span style="left:${pct(a.lo, span)}%">${a.lo}</span><span style="left:${pct(a.hi, span)}%">${a.hi}</span><span class="r">${span} days</span></div></div>
+        <div class="legend" aria-hidden="true"><span><i class="lb"></i>Usual reply time, last 90 days</span><span><i class="lm"></i>Today, day ${d}</span></div>
+        ${late ? `<span class="sm">Past their usual window. If there's still nothing by day ${2 * a.hi}, we'll mark it likely closed.</span>` : ''}
+        ${a.asked ? `<div class="okbar">${S(I.check, 18)}<span>You asked for an update on ${short(a.asked)}.</span></div>` : ''}</section>`;
+    }
+    const steps = [['Applied', short(a.applied) + ' · ' + a.src, 'done']];
+    const st2 = a.status, closedish = st2 === 'closed';
+    if (a.viewed) steps.push(['Viewed', short(a.viewed), 'done']);
+    else if (!closedish) steps.push(['Viewed', '', 'todo']);
+    if (st2 === 'review') { steps.push(['In review', 'Since ' + short(a.since), 'now']); steps.push(['Interviewing', '', 'todo']); }
+    else if (st2 === 'interviewing') steps.push(['Interviewing', 'Since ' + short(a.since), 'now']);
+    else if (st2 === 'considered') { steps.push(['Interviewing', `${a.rounds} rounds, ${short(a.interview[0])} – ${short(a.interview[1])}`, 'done']); steps.push(['Still being considered', 'Since ' + short(a.since), 'now']); }
+    else if (!closedish) { steps.push(['In review', '', 'todo']); steps.push(['Interviewing', '', 'todo']); }
+    if (closedish) steps.push([a.outcome, short(a.decided), 'done']);
+    else steps.push(['Decision', st2 === 'considered' ? 'By ' + short(a.decision) : '', 'todo']);
+    const tl = `<section class="card" aria-label="Progress" style="padding:16px 16px 8px"><span class="label">Progress</span><ol class="tl">${steps.map(([n, s, k], i) => `<li class="${k}"><span class="rail"><span class="dot" aria-hidden="true">${k === 'done' ? S(I.check, 10, 4) : ''}</span>${i < steps.length - 1 ? '<span class="line" aria-hidden="true"></span>' : ''}</span><span class="t"><span class="name">${n}<span class="sr">, ${k === 'done' ? 'done' : k === 'now' ? 'current stage' : 'not yet'}</span></span>${s ? `<span class="sm">${s}</span>` : ''}</span></li>`).join('')}</ol></section>`;
+    let ask = '';
+    if (!closedish && !likely(a) && !a.manual && st2 !== 'interviewing'){
+      const unlock = st2 === 'considered' ? a.decision + 1 : a.applied + a.hi + 1;
+      if (a.asked) ask = `<button type="button" class="btn locked block" disabled>${S(I.check, 18)}Update requested</button><span class="sm" style="text-align:center">You can ask once at each stage</span>`;
+      else if (today() >= unlock) ask = `<button type="button" class="btn primary block" data-act="ask" data-to="${a.id}">${S(I.send, 18)}Ask for an update</button>`;
+      else ask = `<button type="button" class="btn locked block" disabled>${S(I.lock, 18)}Ask for an update</button><span class="sm" style="text-align:center">Opens on ${wshort(unlock)}</span>`;
+    }
+    const job = closedish ? '' : `<section class="card" style="flex-direction:row;align-items:center;gap:12px"><span class="live" aria-hidden="true"></span><span style="flex:1"><span style="display:block;font-weight:600">Job still open</span><span class="sm">Recruiter active ${st.offset > 6 ? 'this week' : '2 days ago'}</span></span></section>`;
+    return `<div class="top"><button type="button" class="back" data-act="back">${S(I.back, 22, 2.2)}Applications</button></div>
+      <header style="padding:4px 16px 4px;display:flex;gap:12px;align-items:center"><span class="mono lg" aria-hidden="true">${esc(letter(a))}</span><div style="display:flex;flex-direction:column;min-width:0"><h1 tabindex="-1" style="font-size:24px;line-height:30px;font-weight:700">${esc(a.role)}</h1><span class="sm">${esc(a.co)} · ${esc(a.loc)}</span></div></header>
+      <div class="scroll" style="padding-top:8px">${todo(a)}${status}${tl}${job}${ask ? `<div style="display:flex;flex-direction:column;gap:6px;margin-top:4px">${ask}</div>` : ''}</div>`;
+  }
+};
+
+function render(focus){
+  $screen.innerHTML = screens[st.screen]();
+  document.getElementById('today').textContent = wshort(today());
+  if (focus) { const h = $screen.querySelector('h1'); if (h) h.focus({preventScroll:true}); }
+}
+function go(screen){ st.stack.push(st.screen); st.screen = screen; closeSheet(); $toast.hidden = true; render(true); $screen.querySelector('.scroll').scrollTop = 0; }
+let lastFocus = null;
+function openSheet(html){
+  lastFocus = document.activeElement; $toast.hidden = true;
+  $sheet.innerHTML = `<div class="sheet" role="dialog" aria-modal="true" aria-labelledby="sh-h"><span class="grab" aria-hidden="true"></span>${html}</div>`;
+  $sheet.hidden = false; const f = ['textarea','input','.choice','.btn.primary','button'].map(q => $sheet.querySelector(q)).find(Boolean); if (f) f.focus();
+}
+function closeSheet(){ if ($sheet.hidden) return; $sheet.hidden = true; $sheet.innerHTML = ''; if (lastFocus && document.body.contains(lastFocus)) lastFocus.focus(); }
+const sheetHead = t => `<div class="sheet-h"><h2 id="sh-h">${t}</h2><button type="button" class="round" style="border:0" data-act="close" aria-label="Close">${S(I.x, 22)}</button></div>`;
+
+function askSheet(a){
+  const who = a.recruiter || `the hiring team at ${a.co}`;
+  const why = a.status === 'considered' ? `The decision date, ${wshort(a.decision)}, has passed` : `Day ${dayOf(a)}: past ${a.co}'s usual ${a.lo}–${a.hi} days`;
+  const msg = a.status === 'considered'
+    ? `Hi ${a.recruiter.split(' ')[0]}, thanks again for the final interview on ${short(a.since)}. I'm still very interested in the ${a.role} role. Is there an update on the decision? Best, Jordan`
+    : `Hello, I applied for the ${a.role} role on ${short(a.applied)} and I'm still very interested. Is there an update on where my application stands? Thank you, Jordan`;
+  openSheet(sheetHead('Ask for an update') + `<div class="person"><span class="avatar" aria-hidden="true">${a.ini || esc(letter(a))}</span><span><span style="display:block;font-weight:600">${esc(a.recruiter || a.co)}</span><span class="sm">${a.recruiter ? 'Recruiter at ' + esc(a.co) : 'Hiring team'}</span></span></div>
+    <div class="amberbar">${S(I.calendar, 18)}${esc(why)}</div>
+    <label class="field"><span>Message</span><textarea id="ask-msg" rows="5">${esc(msg)}</textarea></label>
+    <span class="err" id="ask-err" role="alert"></span>
+    <span class="sm">You can ask once at this stage. ${esc(who.split(' at ')[0])} can answer in one tap, with a decision or a new date.</span>
+    <button type="button" class="btn primary block" data-act="sendask" data-to="${a.id}">${S(I.send, 18)}Send</button>`);
+}
+function addSheet(){
+  openSheet(sheetHead('Add an outside application') + `<p class="sm">For jobs you applied for on a company's own site. You'll update its status yourself.</p>
+    <form id="addf" novalidate style="display:flex;flex-direction:column;gap:12px">
+    <label class="field"><span>Company</span><input id="f-co" autocomplete="organization" maxlength="40" placeholder="Brightfern"></label>
+    <label class="field"><span>Role</span><input id="f-role" maxlength="50" placeholder="Backend Engineer"></label>
+    <span class="err" id="f-err" role="alert"></span>
+    <button type="submit" class="btn primary block">Add to Waiting</button></form>`);
+  document.getElementById('addf').addEventListener('input', e => { e.target.removeAttribute('aria-invalid'); document.getElementById('f-err').textContent = ''; });
+  document.getElementById('addf').addEventListener('submit', e => {
+    e.preventDefault();
+    const co = document.getElementById('f-co'), role = document.getElementById('f-role'), err = document.getElementById('f-err');
+    co.removeAttribute('aria-invalid'); role.removeAttribute('aria-invalid');
+    if (!co.value.trim()) { co.setAttribute('aria-invalid', 'true'); err.textContent = 'Add the company name.'; co.focus(); return; }
+    if (!role.value.trim()) { role.setAttribute('aria-invalid', 'true'); err.textContent = 'Add the role.'; role.focus(); return; }
+    st.apps.push({id:'n' + st.nextId++, co:co.value.trim(), role:role.value.trim(), loc:'Company site', src:'Company site', status:'applied', applied:today(), manual:true});
+    closeSheet(); st.tab = 'waiting'; st.screen = 'list'; st.stack = []; render(true); toast(`Added to Waiting: ${role.value.trim()} at ${co.value.trim()}`);
+  });
+}
+function heardSheet(a){
+  openSheet(sheetHead('What did you hear?') + `<p class="sm">${esc(a.role)} at ${esc(a.co)}</p>
+    <button type="button" class="choice" data-act="heardset" data-to="${a.id}|interviewing"><span class="mono" aria-hidden="true" style="width:36px;height:36px;font-size:15px">${S(I.calendar, 18)}</span><span><span style="display:block;font-weight:600">An interview invite</span><span class="sm">Moves to In progress</span></span></button>
+    <button type="button" class="choice" data-act="heardset" data-to="${a.id}|viewed"><span class="mono" aria-hidden="true" style="width:36px;height:36px;font-size:15px">${S(I.mail, 18)}</span><span><span style="display:block;font-weight:600">They're still reviewing</span><span class="sm">Moves to In progress</span></span></button>
+    <button type="button" class="choice" data-act="heardset" data-to="${a.id}|closed"><span class="mono" aria-hidden="true" style="width:36px;height:36px;font-size:15px">${S(I.x, 18)}</span><span><span style="display:block;font-weight:600">They said no</span><span class="sm">Becomes a clear answer</span></span></button>`);
+}
+
+/* recruiter */
+const PEOPLE = [['DO','Daniel Ortega','Content marketer, B2B SaaS','Lisbon, Portugal','19 Sep'],['HF','Hannah Fischer','Social media lead','Berlin, Germany','19 Sep'],['KM','Kwame Mensah','Growth marketing associate','Accra, Ghana','20 Sep'],
+  ['SR','Sofia Rossi','Digital marketing executive','Milan, Italy','20 Sep'],['LW','Liam Walsh','Marketing coordinator','Dublin, Ireland','21 Sep'],['MT','Mei Tanaka','Brand and content specialist','Osaka, Japan','22 Sep'],['AL','Ana Lima','Email marketing specialist','São Paulo, Brazil','22 Sep']];
+const OUT = {nmf:['Not moving forward','closed'], filled:['Position filled','closed'], sbc:['Still being considered','considered'], hold:['Position on hold','waiting']};
+const MSG = {
+  nmf:'Hi {first name}, thank you for applying for Digital Marketing Specialist at Brightfern. We’ve reviewed your application and won’t be moving forward with it for this role. We appreciate the time you took, and you’re welcome to apply for future roles.',
+  filled:'Hi {first name}, thank you for applying for Digital Marketing Specialist at Brightfern. The role has now been filled, so we’re closing applications. We appreciate your interest, and you’re welcome to apply for future roles.',
+  sbc:'Hi {first name}, thank you for applying for Digital Marketing Specialist at Brightfern. You’re still being considered. We expect to make a decision by the date below, and we’ll update you either way.',
+  hold:'Hi {first name}, thank you for applying for Digital Marketing Specialist at Brightfern. The role is on hold for now, so we’ve paused decisions. We’ll update you as soon as that changes.'
+};
+const selN = () => { const r = st.rec; return r.all ? r.counts.reviewed - r.off.size : r.on.size; };
+const isSel = i => st.rec.all ? !st.rec.off.has(i) : st.rec.on.has(i);
+const visible = () => PEOPLE.map((_, i) => i).filter(i => !st.rec.gone.has(i));
+function renderRec(){
+  const r = st.rec, n = selN();
+  const tabs = [['awaiting','Awaiting review'],['reviewed','Reviewed'],['shortlisted','Shortlisted'],['considered','Still being considered'],['answered','Answered']];
+  let body;
+  if (r.tab === 'reviewed' && r.counts.reviewed){
+    const vis = visible(), oldest = today() - dn('2026-09-19');
+    const rows = vis.map(i => { const p = PEOPLE[i]; return `<tr><td style="width:20px"><input type="checkbox" data-act="row" data-to="${i}" ${isSel(i) ? 'checked' : ''} aria-label="Select ${p[1]}"></td>
+      <td><span class="who"><span class="ini" aria-hidden="true">${p[0]}</span><span><span style="display:block;font-weight:600">${p[1]}</span><span class="sm">${p[2]}</span></span></span></td><td class="hide-s">${p[3]}</td><td class="hide-s">${p[4]}</td><td><span class="chip waiting">Reviewed</span></td></tr>`; }).join('');
+    body = `<div class="amberbar" style="align-items:flex-start">${S(I.clock, 18)}<span>${r.counts.reviewed} reviewed ${r.counts.reviewed === 1 ? 'applicant hasn’t' : 'applicants haven’t'} heard from you. Some applied ${oldest} days ago, past your usual 7–10.</span></div>
+      <div class="rtools"><label><input type="checkbox" data-act="all" ${r.all && !r.off.size ? 'checked' : ''}>Select all ${r.counts.reviewed} reviewed</label>
+      <div style="display:flex;gap:8px"><button type="button" class="btn sm" data-act="noop">${S(I.search, 18)}Search</button><button type="button" class="btn sm" data-act="noop">${S(I.filter, 18)}Filter</button></div></div>
+      ${vis.length ? `<table class="tbl"><thead><tr><th><span class="sr">Select</span></th><th>Applicant</th><th class="hide-s">Location</th><th class="hide-s">Applied</th><th>Status</th></tr></thead><tbody>${rows}</tbody></table>
+      <span class="sm">Showing ${vis.length} of ${r.counts.reviewed}</span>` : `<span class="sm">The ${r.counts.reviewed} still to answer aren’t shown in this sample.</span>`}`;
+  } else if (r.tab === 'answered' && r.counts.answered){
+    body = `<div class="card" style="gap:10px">${Object.entries(r.sent).map(([k, v]) => `<div style="display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap"><span><strong>${v}</strong> ${v === 1 ? 'applicant' : 'applicants'}</span><span style="display:flex;gap:8px;align-items:center"><span class="chip ${OUT[k][1]}">${OUT[k][0]}</span><span class="sm">${short(today())}</span></span></div>`).join('')}</div>
+      <p class="sm">Each of them now sees this answer on their application and got it by email.</p>`;
+  } else if (r.tab === 'considered' && r.sbc.length){
+    body = `<div class="card" style="gap:10px">${r.sbc.map(x => `<div style="display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap"><span><strong>${x.n}</strong> ${x.n === 1 ? 'applicant' : 'applicants'}</span><span style="display:flex;gap:8px;align-items:center"><span class="chip considered">Still being considered</span><span class="sm">Decision by ${wshort(x.date)}</span></span></div>`).join('')}</div>
+      <p class="sm">They see this decision date on their application. If it passes with no answer, they can ask you for an update once. The other 2 here are sample data.</p>`;
+  } else {
+    body = `<div class="empty">${r.tab === 'reviewed' ? 'Everyone you reviewed has an answer. Nice work.' : r.tab === 'answered' ? 'No answers sent yet. Pick people in Reviewed and close the loop.' : 'Sample data: this group isn’t part of the demo. Try Reviewed.'}</div>`;
+  }
+  $rmain.innerHTML = `<header class="rhead"><span class="sm">Jobs › Digital Marketing Specialist</span>
+    <div class="rrow"><div><h1 tabindex="-1">Digital Marketing Specialist</h1><span class="sm">Brightfern · Remote · 186 applicants · posted 18 Sep</span></div>
+    <div class="replytime">${S(I.clock, 22)}<span><span style="display:block;font-weight:600">Your usual reply time: 7–10 days</span><span class="sm">Measured from your replies · shown on the job post</span></span></div></div>
+    <div class="rtabs" role="group" aria-label="Applicant groups">${tabs.map(([k, l]) => `<button type="button" data-act="rtab" data-to="${k}" aria-pressed="${r.tab === k}">${l}<span>${r.counts[k]}</span></button>`).join('')}</div></header>
+    <div class="rbody">${body}</div>
+    <footer class="rfoot" ${r.tab === 'reviewed' && n > 0 ? '' : 'hidden'}><span><strong>${n} selected</strong><span style="opacity:.75"> · you’ll review the message before anything is sent</span></span>
+      <span style="display:flex;gap:10px;flex-wrap:wrap"><button type="button" class="btn ghost" data-act="clearsel">Clear selection</button><button type="button" class="btn solid" data-act="loop">Close the loop${S(I.chev, 18)}</button></span></footer>
+    <div class="modal-wrap" id="modal" hidden></div><div class="rtoast" id="rtoast" role="status" aria-live="polite" hidden></div>`;
+  const all = $rmain.querySelector('[data-act="all"]'); if (all) all.indeterminate = n > 0 && !(r.all && !r.off.size);
+  const tb = $rmain.querySelector('.rtabs'), on = tb.querySelector('[aria-pressed="true"]'); if (on.offsetLeft + on.offsetWidth > tb.scrollLeft + tb.clientWidth || on.offsetLeft < tb.scrollLeft) tb.scrollLeft = on.offsetLeft - 16;
+}
+function loopModal(){
+  const n = selN();
+  const m = document.getElementById('modal');
+  m.innerHTML = `<section class="modal" role="dialog" aria-modal="true" aria-labelledby="m-h">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px"><div><h2 id="m-h">Close the loop for ${n} ${n === 1 ? 'applicant' : 'applicants'}</h2><span class="sm">Digital Marketing Specialist · nothing is sent until you press Send</span></div><button type="button" class="round" style="border:0" data-act="mclose" aria-label="Close">${S(I.x, 22)}</button></div>
+    <fieldset class="opts"><legend>What should they hear?</legend>
+      <label class="opt"><input type="radio" name="kind" value="nmf" checked data-act="kind"><span><span style="display:block;font-weight:600">Not moving forward</span><span class="sm">Reviewed; won’t progress for this role</span></span></label>
+      <label class="opt"><input type="radio" name="kind" value="filled" data-act="kind"><span><span style="display:block;font-weight:600">Position filled</span><span class="sm">The role is closed</span></span></label>
+      <label class="opt"><input type="radio" name="kind" value="sbc" data-act="kind"><span><span style="display:block;font-weight:600">Still being considered</span><span class="sm">Set a decision date</span></span></label>
+      <label class="opt"><input type="radio" name="kind" value="hold" data-act="kind"><span><span style="display:block;font-weight:600">Position on hold</span><span class="sm">Paused for now; you’ll update them</span></span></label></fieldset>
+    <label class="field" id="datefield" hidden><span>Decision date</span><input type="date" id="m-date" min="${new Date(today() * 864e5 + 864e5).toISOString().slice(0, 10)}" value="${new Date((today() + 8) * 864e5).toISOString().slice(0, 10)}"></label>
+    <label class="field"><span>Message <span class="muted" style="font-weight:400">· you can edit it</span></span><textarea id="m-msg" rows="4" aria-describedby="m-tip">${MSG.nmf}</textarea><span class="sm" id="m-tip">{first name} becomes each person’s name, like “Hi Daniel,”</span></label>
+    <span class="err" id="m-err" role="alert"></span>
+    <div class="preview"><span class="label">They’ll see</span><span id="m-chip" class="chip closed">Not moving forward</span><span class="sm" id="m-when">${short(today())}, on their application and by email</span></div>
+    <div style="display:flex;justify-content:flex-end;gap:12px;flex-wrap:wrap"><button type="button" class="btn" data-act="mclose">Cancel</button><button type="button" class="btn primary" data-act="msend">${S(I.send, 18)}Send to ${n}</button></div></section>`;
+  m.hidden = false; lastFocus = document.activeElement; m.querySelector('input[name=kind]').focus();
+}
+function closeModal(){ const m = document.getElementById('modal'); if (!m || m.hidden) return; m.hidden = true; m.innerHTML = ''; if (lastFocus && document.body.contains(lastFocus)) lastFocus.focus(); }
+
+function setMode(mode){
+  st.mode = mode;
+  document.getElementById('stage').hidden = mode !== 'candidate';
+  document.getElementById('rec').hidden = mode !== 'recruiter';
+  document.querySelectorAll('[data-act="mode"][aria-pressed]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.to === mode)));
+  if (mode === 'recruiter') { renderRec(); $rmain.querySelector('h1').focus({preventScroll:true}); } else render(true);
+}
+
+document.addEventListener('click', e => {
+  const el = e.target.closest('[data-act]');
+  if (!el) { if (e.target === $sheet) closeSheet(); const m = document.getElementById('modal'); if (m && e.target === m) closeModal(); return; }
+  const a = el.dataset.act, to = el.dataset.to;
+  if (['row','all','kind'].includes(a)) return;
+  if (el.tagName === 'A' && el.getAttribute('href') === '#rec') e.preventDefault();
+  switch (a){
+    case 'mode': setMode(to); break;
+    case 'jump': st.screen = 'list'; st.stack = []; closeSheet(); render(true); break;
+    case 'navother': toast('Sample: only Jobs works in this prototype.'); break;
+    case 'tab': st.tab = to; if (st.screen !== 'list') { st.screen = 'list'; st.stack = []; } if (st.mode !== 'candidate') setMode('candidate'); render(false); { const t = $screen.querySelector(`[data-act="tab"][data-to="${to}"]`); if (t) t.focus(); } break;
+    case 'open': { const ap = find(to); if (st.mode !== 'candidate') setMode('candidate'); st.open = to; if (ap.unread) ap.unread = false; go('detail'); } break;
+    case 'back': st.screen = 'list'; st.stack = []; render(true); break;
+    case 'skip': st.offset += 1; if (st.mode === 'candidate') render(false); else renderRec(); document.getElementById('today').textContent = wshort(today());
+      { const moved = st.apps.filter(x => x.status === 'applied' && !x.manual && dayOf(x) === 2 * x.hi + 1).length; toast(`It's ${wshort(today())}.` + (moved ? ` ${moved} moved to likely closed.` : ''), st.mode === 'recruiter'); } break;
+    case 'add': addSheet(); break;
+    case 'close': closeSheet(); break;
+    case 'ask': askSheet(find(to)); break;
+    case 'sendask': {
+      const ap = find(to), msg = document.getElementById('ask-msg');
+      if (!msg.value.trim()) { document.getElementById('ask-err').textContent = 'Write a short message first.'; msg.focus(); return; }
+      ap.asked = today(); closeSheet(); render(false); toast('Update request sent');
+      if (ap.status === 'considered') setTimeout(() => { if (ap.asked && !ap.replied && st.apps.includes(ap)) { ap.decision = today() + 4; ap.replied = `${ap.recruiter} replied: still deciding. New decision date: ${longd(ap.decision)}.`; ap.unread = st.screen !== 'detail' || st.open !== ap.id; if (st.mode === 'candidate') render(false); toast(`${ap.recruiter} replied with a new decision date`); } }, 2200);
+    } break;
+    case 'heard': heardSheet(find(to)); break;
+    case 'heardset': { const [id, s] = to.split('|'), ap = find(id);
+      if (s === 'closed') { ap.status = 'closed'; ap.outcome = 'Not moving forward'; ap.decided = today(); }
+      else { ap.status = s; ap.viewed = ap.viewed || today(); ap.since = today(); ap.manual = true; if (s === 'interviewing') ap.round2 = null; }
+      closeSheet(); st.screen = 'list'; st.tab = s === 'closed' ? 'closed' : 'progress'; st.stack = []; render(true); toast(s === 'closed' ? `${ap.co}: marked as a clear answer` : `${ap.co} moved back to In progress`); } break;
+    case 'manual': { const [id, s] = to.split('|'), ap = find(id);
+      if (s === 'closed' || s === 'offer') { ap.status = 'closed'; ap.outcome = s === 'offer' ? 'Offer' : 'Not moving forward'; ap.decided = today(); } else { ap.status = 'interviewing'; ap.viewed = ap.viewed || today(); ap.since = today(); }
+      render(false); toast(s === 'offer' ? 'Congratulations. Marked as an offer' : s === 'closed' ? 'Marked as a clear answer' : 'Moved to In progress'); } break;
+    case 'theme': { const dark = !isDark(); document.documentElement.dataset.theme = dark ? 'dark' : 'light'; themeLabel(); } break;
+    case 'reset': { const mode = st.mode; st = fresh(); closeSheet(); setMode(mode); toast('Demo reset', mode === 'recruiter'); } break;
+    case 'rtab': st.rec.tab = to; renderRec(); { const t = $rmain.querySelector(`[data-act="rtab"][data-to="${to}"]`); if (t) t.focus(); } break;
+    case 'clearsel': st.rec.all = false; st.rec.off = new Set(); st.rec.on = new Set(); renderRec(); $rmain.querySelector('[data-act="all"]')?.focus(); break;
+    case 'loop': loopModal(); break;
+    case 'mclose': closeModal(); break;
+    case 'msend': {
+      const kind = document.querySelector('input[name=kind]:checked').value, msg = document.getElementById('m-msg'), err = document.getElementById('m-err');
+      if (!msg.value.trim()) { err.textContent = 'Write a message first.'; msg.focus(); return; }
+      if (kind === 'sbc') { const dv = document.getElementById('m-date').value; if (!dv || dn(dv) <= today()) { err.textContent = 'Pick a decision date after today.'; document.getElementById('m-date').focus(); return; } }
+      const r = st.rec, n = selN();
+      visible().filter(isSel).forEach(i => r.gone.add(i));
+      r.counts.reviewed -= n; if (kind === 'sbc') { r.counts.considered += n; r.sbc.push({n, date:dn(document.getElementById('m-date').value)}); } else { r.counts.answered += n; r.sent[kind] = (r.sent[kind] || 0) + n; }
+      r.off = new Set(); r.on = new Set(); r.all = false; closeModal(); r.tab = kind === 'sbc' ? 'considered' : 'answered'; renderRec();
+      toast(`${n} ${n === 1 ? 'applicant now sees' : 'applicants now see'} “${OUT[kind][0]}”`, true); $rmain.querySelector('h1').focus({preventScroll:true});
+    } break;
+    case 'noop': toast('Sample: this part isn’t in the prototype.', st.mode === 'recruiter'); break;
+  }
+});
+document.addEventListener('change', e => {
+  const a = e.target.dataset.act, r = st.rec;
+  if (a === 'all') { r.all = e.target.checked; r.off = new Set(); r.on = new Set(); renderRec(); $rmain.querySelector('[data-act="all"]').focus(); }
+  if (a === 'row') { const i = +e.target.dataset.to;
+    if (r.all) { if (e.target.checked) r.off.delete(i); else r.off.add(i); if (r.off.size >= r.counts.reviewed) { r.all = false; r.off = new Set(); } }
+    else { if (e.target.checked) r.on.add(i); else r.on.delete(i); }
+    renderRec(); const b = $rmain.querySelector(`[data-act="row"][data-to="${i}"]`); if (b) b.focus(); }
+  if (a === 'kind') { const k = e.target.value; document.getElementById('m-msg').value = MSG[k]; document.getElementById('datefield').hidden = k !== 'sbc';
+    const c = document.getElementById('m-chip'); c.className = 'chip ' + OUT[k][1]; c.textContent = OUT[k][0];
+    document.getElementById('m-when').textContent = k === 'sbc' ? 'with your decision date, on their application and by email' : `${short(today())}, on their application and by email`; }
+});
+document.addEventListener('keydown', e => {
+  const m = document.getElementById('modal'), modalOpen = m && !m.hidden, sheetOpen = !$sheet.hidden;
+  if (e.key === 'Escape') { if (modalOpen) closeModal(); else if (sheetOpen) closeSheet(); return; }
+  if (e.key === 'Tab' && (modalOpen || sheetOpen)) {
+    const box = modalOpen ? m : $sheet; const f = [...box.querySelectorAll('button:not([disabled]), input, textarea, a[href]')].filter(x => x.offsetParent !== null); if (!f.length) return;
+    if (e.shiftKey && document.activeElement === f[0]) { e.preventDefault(); f.at(-1).focus(); }
+    else if (!e.shiftKey && document.activeElement === f.at(-1)) { e.preventDefault(); f[0].focus(); }
+  }
+});
+function isDark(){ const t = document.documentElement.dataset.theme; return t ? t === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches; }
+function themeLabel(){ const b = document.querySelector('[data-act="theme"]'), d = isDark(), l = d ? 'Light mode' : 'Dark mode'; b.setAttribute('aria-label', l); b.querySelector('.long').textContent = l;
+  b.querySelector('.ico').innerHTML = d ? '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>' : '<path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/>'; }
+themeLabel();
+render(false);
+})();
+</script>
+<script>(function(){var h=location.hash&&document.getElementById(location.hash.slice(1));try{(h||document.body).scrollIntoView({block:"start"});}catch(e){}})();</script>
+</body>
+</html>
